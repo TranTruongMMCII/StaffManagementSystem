@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,8 +85,8 @@ public class EmployeeReward extends javax.swing.JFrame {
             String query = "SELECT MaKT, NhanVien.MaNV, HoTen, NgayKL, DMKThuongKyLuat.MaKL, Loai, Ten, HinhThuc, LyDo, GhiChu\n" + 
             		"  FROM dbo.NhanVien \n" + 
             		"  LEFT JOIN dbo.KhenThuongKyLuat ON NhanVien.MaNV = KhenThuongKyLuat.MaNV \n" + 
-            		"  LEFT JOIN dbo.DMKThuongKyLuat ON dbo.DMKThuongKyLuat.MaDMK = dbo.KhenThuongKyLuat.MaDMK \n"
-            		+ "WHERE MaKT IS NOT NULL";
+            		"  LEFT JOIN dbo.DMKThuongKyLuat ON dbo.DMKThuongKyLuat.MaDMK = dbo.KhenThuongKyLuat.MaDMK";
+     
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()) {
@@ -94,7 +95,7 @@ public class EmployeeReward extends javax.swing.JFrame {
             				rs.getInt(1),
             				rs.getString(2),
             				rs.getString(3),
-            				rs.getDate(4).toString(),
+            				rs.getString(4),
             				rs.getString(5),
             				rs.getString(6),
             				rs.getString(7),
@@ -106,16 +107,18 @@ public class EmployeeReward extends javax.swing.JFrame {
         //Đưa các bộ đếm hàng về 0:
         tableModel.setRowCount(0);
         for(EmployeeRewardClass employee: employeeList){
-            tableModel.addRow(new Object[] {
-                tableModel.getRowCount()+1,
-                employee.getMaNV(),
-                employee.getLoai(),
-                employee.getNgayKL(),
-                employee.getTen(),
-                employee.getLyDo(),
-                employee.getHinhThuc(),
-                employee.getGhiChu()
-            });
+            if(employee.getMaKT() != 0) {
+            	tableModel.addRow(new Object[] {
+                        tableModel.getRowCount()+1,
+                        employee.getMaNV(),
+                        employee.getLoai(),
+                        employee.getNgayKL(),
+                        employee.getTen(),
+                        employee.getLyDo(),
+                        employee.getHinhThuc(),
+                        employee.getGhiChu()
+                    });
+            }
         }}
         catch (Exception e) {
 			// TODO: handle exception
@@ -179,7 +182,28 @@ public class EmployeeReward extends javax.swing.JFrame {
         		for(EmployeeRewardClass e1:employeeList) {
         			if(e1.getMaNV().trim().equals(
         					cbEmployeeCode.getSelectedItem().toString().trim())){
-        				txtEmployeeName.setText(cbEmployeeCode.getSelectedItem().toString());
+        				txtEmployeeName.setText(e1.getHoTen());
+        				if(e1.getMaKT() != 0) {
+        					try {
+								txtDayReward.setDate(
+										new SimpleDateFormat("yyyy-MM-dd").parse(e1.getNgayKL()));
+							} catch (ParseException e2) {
+								// TODO Auto-generated catch block
+								e2.printStackTrace();
+							}
+        					txtFormality.setText(e1.getHinhThuc());
+        					txtNote.setText(e1.getGhiChu());
+        					txtReason.setText(e1.getLyDo());
+        					txtRewardName.setText(e1.getTen());
+        					setcbLoai(e1.getLoai());
+        				}
+        				else {
+        					txtDayReward.setDate(null);
+        			        txtFormality.setText("");
+        			        txtReason.setText("");
+        			        txtRewardName.setText("");
+        			        txtNote.setText("");
+        				}
         				break;
         			}
         		}

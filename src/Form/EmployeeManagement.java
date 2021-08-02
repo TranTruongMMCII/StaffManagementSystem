@@ -1271,8 +1271,6 @@ public class EmployeeManagement extends javax.swing.JFrame {
     	if(!manv.equals("")) {
     		PopupEmployeeResume popupEmployeeResume = new PopupEmployeeResume();
         	popupEmployeeResume.setVisible(true);
-        	resetForm();
-        	showEmployee();
     	}
     }//GEN-LAST:event_jButton1ActionPerformed
 
