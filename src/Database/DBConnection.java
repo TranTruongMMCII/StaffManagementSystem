@@ -16,9 +16,10 @@ import java.sql.SQLException;
 public class DBConnection {
     
     private static DBConnection instance = new DBConnection();
-    private String url = "jdbc:sqlserver://localhost:50256;databaseName=NVNhanSu;integratedSecurity=true";
-    private String user = "sa";
-    private String password = "12345678";
+    private String url = "jdbc:sqlserver://localhost:1433;databaseName=NVNhanSu;integratedSecurity=true;";
+
+    private String user = "";
+    private String password = "";
     private String driverClass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     
     //private constructor:
@@ -30,7 +31,7 @@ public class DBConnection {
         }
     }
     
-    //LÃ¢Ì�y mÃ´Ì£t thÆ°Ì£c thÃªÌ‰ database, nÃªÌ�u khÃ´ng coÌ� thiÌ€ taÌ£o mÆ¡Ì�i:
+    //Lấy một thực thể database, nếu không có thì tạo mới:
     public static DBConnection getInstance() {
         if(instance == null)
         {
@@ -38,7 +39,7 @@ public class DBConnection {
         }
         return instance;
     }
-    //KÃªÌ�t nÃ´Ì�i vÆ¡Ì�i database:
+    //Kết nối với database:
     public Connection getConnection() throws SQLException{
         Connection connection = DriverManager.getConnection(url, user, password);
         return connection;

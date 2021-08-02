@@ -20,16 +20,12 @@ import javax.swing.table.DefaultTableModel;
  */
 public class EmployeeSearch extends javax.swing.JFrame implements DocumentListener{
     
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	List<EmployeeReport> employeeList = new ArrayList<>();
-    //Khai baÌ�o caÌ�c biÃªÌ�n tiÌ€m kiÃªÌ�m:
+    List<EmployeeReport> employeeList = new ArrayList<>();
+    //Khai báo các biến tìm kiếm:
     String fieldName;
     String searchValue;
     
-    //DuÌ€ng Ä‘ÃªÌ‰ thao taÌ�c trÃªn baÌ‰ng:
+    //Dùng để thao tác trên bảng:
     DefaultTableModel tableModel;
 
     /**
@@ -38,7 +34,7 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
     public EmployeeSearch() {
         initComponents();
         
-        //MÄƒÌ£c Ä‘iÌ£nh ban Ä‘Ã¢Ì€u laÌ€ Ä‘ang tiÌ€m kiÃªÌ�m maÌƒ phoÌ€ng ban:
+        //Mặc định ban đầu là đang tìm kiếm mã phòng ban:
         rbCode.setSelected(true);
         txtSearchCode.setEditable(true);
         
@@ -48,19 +44,23 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
         rbCMND.setSelected(false);
         txtSearchCMND.setEditable(false);
         
-        //Ä�Ã´Ì‰ dÆ°Ìƒ liÃªÌ£u vaÌ€o table khi bÃ¢Ì£t chÆ°Ì�c nÄƒng naÌ€y lÃªn:
+        rbDepartmentName.setSelected(false);
+        txtSNameDepartment.setEditable(false);
+        
+        //Đổ dữ liệu vào table khi bật chức năng này lên:
         tableModel = (DefaultTableModel) tableEmployeeMana.getModel();
         showEmployee();
         
-        fieldName = "MaNV";// MÄƒÌ£c Ä‘iÌ£nh ban Ä‘Ã¢Ì€u Ä‘ang Æ¡Ì‰ MaPB
-        searchValue= "";// ChÆ°a nhÃ¢Ì£p nÃ´Ì£i dung tiÌ€m kiÃªÌ�m hay tiÌ€m kiÃªÌ�m all.
-        //GÄƒÌ�n lÄƒÌ�ng nghe sÆ°Ì£ kiÃªÌ£n cho 2 textfield:
+        fieldName = "MaNV";// Mặc định ban đầu đang ở MaPB
+        searchValue= "";// Chưa nhập nội dung tìm kiếm hay tìm kiếm all.
+        //Gắn lắng nghe sự kiện cho 2 textfield:
         txtSearchCode.getDocument().addDocumentListener(this);
         txtSearchName.getDocument().addDocumentListener(this);
         txtSearchCMND.getDocument().addDocumentListener(this);
+        txtSNameDepartment.getDocument().addDocumentListener(this);
     }
        
-    //Start: caÌ�c interface cuÌ‰a DocumentListener:
+    //Start: các interface của DocumentListener:
     public void changedUpdate(DocumentEvent e) {
         changeText(e);
     }
@@ -71,15 +71,15 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
     public void insertUpdate(DocumentEvent e) {
         changeText(e);
     }
-    //End: caÌ�c interface cuÌ‰a DocumentListener:
+    //End: các interface của DocumentListener:
     
     
-    //HiÃªÌ‰n thiÌ£ dÆ°Ìƒ liÃªÌ£u lÃªn table:
+    //Hiển thị dữ liệu lên table:
     private void showEmployee(){
         
         this.employeeList = EmployeeModify.findAll();
         
-        //Ä�Æ°a caÌ�c bÃ´Ì£ Ä‘ÃªÌ�m haÌ€ng vÃªÌ€ 0:
+        //Đưa các bộ đếm hàng về 0:
         tableModel.setRowCount(0);
         for(EmployeeReport employee: employeeList){
             tableModel.addRow(new Object[] {
@@ -102,33 +102,42 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
     public void changeText(DocumentEvent e) {
         if(e.getDocument() == txtSearchCode.getDocument())
         {
-            //GaÌ�n giaÌ� triÌ£ tiÌ€m kiÃªÌ�m Ä‘ÃªÌ‰ cÃ¢Ì€n khi tiÌ€m kiÃªÌ�m chiÌ�nh xaÌ�c:
+            //Gán giá trị tìm kiếm để cần khi tìm kiếm chính xác:
             this.searchValue = txtSearchCode.getText().trim();
             String employeeCode = txtSearchCode.getText().trim();
-            //Khi thay Ä‘Ã´Ì‰i txtSearchCode thiÌ€ goÌ£i database:
+            //Khi thay đổi txtSearchCode thì gọi database:
             this.showSearchResult("MaNV",employeeCode);
             
         }else if(e.getDocument() == txtSearchName.getDocument())
         {
-            //GaÌ�n giaÌ� triÌ£ tiÌ€m kiÃªÌ�m Ä‘ÃªÌ‰ cÃ¢Ì€n khi tiÌ€m kiÃªÌ�m chiÌ�nh xaÌ�c:
+            //Gán giá trị tìm kiếm để cần khi tìm kiếm chính xác:
             this.searchValue = txtSearchName.getText().trim();
             String employeeName = txtSearchName.getText().trim();
 
-            //Khi thay Ä‘Ã´Ì‰i txtSearchName thiÌ€ goÌ£i database:
+            //Khi thay đổi txtSearchName thì gọi database:
             this.showSearchResult("HoTen",employeeName);
         }        
         else if(e.getDocument() == txtSearchCMND.getDocument())
         {
-            //GaÌ�n giaÌ� triÌ£ tiÌ€m kiÃªÌ�m Ä‘ÃªÌ‰ cÃ¢Ì€n khi tiÌ€m kiÃªÌ�m chiÌ�nh xaÌ�c:
+            //Gán giá trị tìm kiếm để cần khi tìm kiếm chính xác:
             this.searchValue = txtSearchCMND.getText().trim();
             String employeeCMND = txtSearchCMND.getText().trim();
 
-            //Khi thay Ä‘Ã´Ì‰i txtSearchCMND thiÌ€ goÌ£i database:
+            //Khi thay đổi txtSearchCMND thì gọi database:
             this.showSearchResult("CMND",employeeCMND);
+        }
+        else if(e.getDocument() == txtSNameDepartment.getDocument())
+        {
+            //Gán giá trị tìm kiếm để cần khi tìm kiếm chính xác:
+            this.searchValue = txtSNameDepartment.getText().trim();
+            String employeeTenPB = txtSNameDepartment.getText().trim();
+
+            //Khi thay đổi txtSearchCMND thì gọi database:
+            this.showSearchResult("TenPB",employeeTenPB);
         }
     }
     
-    //HiÃªÌ‰n thiÌ£ dÆ°Ìƒ liÃªÌ£u lÃªn table: theo nÃ´Ì£i dung tiÌ€m kiÃªÌ�m (mÄƒÌ£c Ä‘iÌ£nh: fieldName = null, searchValue = "")
+    //Hiển thị dữ liệu lên table: theo nội dung tìm kiếm (mặc định: fieldName = null, searchValue = "")
     private void showSearchResult(String fieldName, String searchValue){
         
         if(fieldName == null)
@@ -138,7 +147,7 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
         }
         else if(fieldName.equals("MaNV")){          
             this.employeeList = EmployeeModify.findByMaNV(searchValue);            
-            //Ä�Æ°a caÌ�c bÃ´Ì£ Ä‘ÃªÌ�m haÌ€ng vÃªÌ€ 0:
+            //Đưa các bộ đếm hàng về 0:
             int rowsToRemove = this.tableModel.getRowCount();
             for(int i = rowsToRemove - 1; i>=0; i--)
             {
@@ -146,7 +155,7 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
             }
             
             this.tableModel.setRowCount(0);
-            //Reset laÌ£i tableModel:
+            //Reset lại tableModel:
             
             for(EmployeeReport employee: employeeList){
                 this.tableModel.addRow(new Object[] {
@@ -168,7 +177,7 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
             
         }else if(fieldName.equals("HoTen")){          
             this.employeeList = EmployeeModify.findByHoTen(searchValue);            
-            //Ä�Æ°a caÌ�c bÃ´Ì£ Ä‘ÃªÌ�m haÌ€ng vÃªÌ€ 0:
+            //Đưa các bộ đếm hàng về 0:
             int rowsToRemove = this.tableModel.getRowCount();
             for(int i = rowsToRemove - 1; i>=0; i--)
             {
@@ -176,7 +185,7 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
             }
             
             this.tableModel.setRowCount(0);
-            //Reset laÌ£i tableModel:
+            //Reset lại tableModel:
             
             for(EmployeeReport employee: employeeList){
                 this.tableModel.addRow(new Object[] {
@@ -196,7 +205,7 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
             }
         }else if(fieldName.equals("CMND")){           
             this.employeeList = EmployeeModify.findByCMND(searchValue);            
-            //Ä�Æ°a caÌ�c bÃ´Ì£ Ä‘ÃªÌ�m haÌ€ng vÃªÌ€ 0:
+            //Đưa các bộ đếm hàng về 0:
             int rowsToRemove = this.tableModel.getRowCount();
             for(int i = rowsToRemove - 1; i>=0; i--)
             {
@@ -204,7 +213,35 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
             }
             
             this.tableModel.setRowCount(0);
-            //Reset laÌ£i tableModel:            
+            //Reset lại tableModel:            
+            for(EmployeeReport employee: employeeList){
+                this.tableModel.addRow(new Object[] {
+                tableModel.getRowCount()+1,
+                employee.getMaNV(),
+                employee.getHoTen(),
+                employee.getNgaySinh(),
+                employee.getGioiTinh(),
+                employee.getTenPB(),
+                employee.getTenCV(),                
+                employee.getDiaChi(),
+                employee.getCMND(),
+                employee.getDienThoai(),
+                employee.getEmail(),
+                employee.getHeSoLuong()
+                });
+            }
+            
+            }else if(fieldName.equals("TenPB")){           
+            this.employeeList = EmployeeModify.findByTenPB(searchValue);            
+            //Đưa các bộ đếm hàng về 0:
+            int rowsToRemove = this.tableModel.getRowCount();
+            for(int i = rowsToRemove - 1; i>=0; i--)
+            {
+                this.tableModel.removeRow(i);
+            }
+            
+            this.tableModel.setRowCount(0);
+            //Reset lại tableModel:            
             for(EmployeeReport employee: employeeList){
                 this.tableModel.addRow(new Object[] {
                 tableModel.getRowCount()+1,
@@ -229,7 +266,7 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
-    
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -246,11 +283,13 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
         txtSearchCMND = new javax.swing.JTextField();
         btnRefesh = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
+        rbDepartmentName = new javax.swing.JRadioButton();
+        txtSNameDepartment = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("TÃ¬m kiáº¿m nhÃ¢n viÃªn");
+        setTitle("Tìm kiếm nhân viên");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ThÃ´ng tin chi tiáº¿t", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 2, 18))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thông tin chi tiết", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 2, 18))); // NOI18N
 
         tableEmployeeMana.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -260,19 +299,14 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
                 {null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "MÃ£ NV", "Há»� TÃªn", "NgÃ y Sinh", "Giá»›i TÃ­nh", "PhÃ²ng ban", "Chá»©c vá»¥", "Ä�á»‹a Chá»‰", "CMND", "Ä�iá»‡n thoáº¡i", "Email", "HS lÆ°Æ¡ng"
+                "STT", "Mã NV", "Họ Tên", "Ngày Sinh", "Giới Tính", "Phòng ban", "Chức vụ", "Địa Chỉ", "CMND", "Điện thoại", "Email", "HS lương"
             }
         ) {
-            /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-			@SuppressWarnings("rawtypes")
-			Class[] types = new Class [] {
+            Class[] types = new Class [] {
                 java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Integer.class
             };
 
-            public Class<?> getColumnClass(int columnIndex) {
+            public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
@@ -311,21 +345,23 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 987, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 28)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel1.setText("TÃŒM KIáº¾M NHÃ‚N VIÃŠN");
+        jLabel1.setText("TÌM KIẾM NHÂN VIÊN");
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "TÃ¬m kiáº¿m", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 2, 18))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tìm kiếm", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 2, 18))); // NOI18N
 
         rbCode.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        rbCode.setText("MÃ£ NV");
+        rbCode.setText("Mã NV");
         rbCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rbCodeActionPerformed(evt);
@@ -333,7 +369,7 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
         });
 
         rbName.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        rbName.setText("Há»� TÃªn");
+        rbName.setText("Họ Tên");
         rbName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rbNameActionPerformed(evt);
@@ -363,29 +399,40 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
             }
         });
 
+        rbDepartmentName.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        rbDepartmentName.setText("Tên PB");
+        rbDepartmentName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbDepartmentNameActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(rbCMND, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rbName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rbCode, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtSearchName, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtSearchCMND, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnRefesh, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(rbCMND, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(rbName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(rbCode, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtSearchCode, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnBack, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtSearchName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSearchCMND, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(rbDepartmentName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(btnRefesh, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29)
+                                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtSNameDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -404,10 +451,14 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
                     .addComponent(rbCMND)
                     .addComponent(txtSearchCMND, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnBack, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnRefesh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtSNameDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rbDepartmentName))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnBack)
+                    .addComponent(btnRefesh, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -420,20 +471,20 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(547, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(383, 383, 383))
+                .addGap(407, 407, 407))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         pack();
@@ -444,7 +495,7 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
         // TODO add your handling code here:
         DashBoard db = new DashBoard();
         int dialogButton = JOptionPane.YES_NO_OPTION;
-        int dialogResult = JOptionPane.showConfirmDialog (null, "BaÌ£n coÌ� cháº¯c cháº¯n muá»‘n thoÃ¡t?","Warning",dialogButton);
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Bạn có chắc chắn muốn thoát?","Warning",dialogButton);
         if(dialogResult == JOptionPane.YES_OPTION){
             db.setVisible(true);
             this.dispose();
@@ -458,13 +509,15 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
         rbName.setSelected(false);
         rbCMND.setSelected(false);
         
-        //VÃ´ hiÃªÌ£u hoÌ�a txtDepartmentName:
+        //Vô hiệu hóa txtDepartmentName:
         txtSearchName.setEditable(false);
         txtSearchName.setText("");
         txtSearchCMND.setEditable(false);
         txtSearchCMND.setText("");
+        txtSNameDepartment.setEditable(false);
+        txtSNameDepartment.setText("");
         
-        //HuÌ‰y vÃ´ hiÃªÌ£u hoÌ�a txtDepartmentCode:
+        //Hủy vô hiệu hóa txtDepartmentCode:
         txtSearchCode.setEditable(true);
     }//GEN-LAST:event_rbCodeActionPerformed
 
@@ -475,13 +528,15 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
         rbCode.setSelected(false);
         rbCMND.setSelected(false);
         
-        //VÃ´ hiÃªÌ£u hoÌ�a txtDepartmentName:
+        //Vô hiệu hóa txtDepartmentName:
         txtSearchCode.setEditable(false);
         txtSearchCode.setText("");
         txtSearchCMND.setEditable(false);
         txtSearchCMND.setText("");
+        txtSNameDepartment.setEditable(false);
+        txtSNameDepartment.setText("");
         
-        //HuÌ‰y vÃ´ hiÃªÌ£u hoÌ�a txtDepartmentCode:
+        //Hủy vô hiệu hóa txtDepartmentCode:
         txtSearchName.setEditable(true);
     }//GEN-LAST:event_rbNameActionPerformed
 
@@ -492,24 +547,28 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
         rbCode.setSelected(false);
         rbName.setSelected(false);
         
-        //VÃ´ hiÃªÌ£u hoÌ�a txtDepartmentName:
+        //Vô hiệu hóa txtDepartmentName:
         txtSearchCode.setEditable(false);
         txtSearchCode.setText("");
         txtSearchName.setEditable(false);
         txtSearchName.setText("");
+        txtSNameDepartment.setEditable(false);
+        txtSNameDepartment.setText("");
         
-        //HuÌ‰y vÃ´ hiÃªÌ£u hoÌ�a txtDepartmentCode:
+        //Hủy vô hiệu hóa txtDepartmentCode:
         txtSearchCMND.setEditable(true);
     }//GEN-LAST:event_rbCMNDActionPerformed
 
     private void btnRefeshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefeshActionPerformed
         // TODO add your handling code here:
-        //Reset laÌ£i caÌ�c radio button:
+        //Reset lại các radio button:
         rbCode.setSelected(true);
         rbName.setSelected(false);
         rbCMND.setSelected(false);
+        rbDepartmentName.setSelected(false);
+
         
-        //Reset laÌ£i caÌ�c field nhÃ¢Ì£p dÆ°Ìƒ liÃªÌ£u:
+        //Reset lại các field nhập dữ liệu:
         txtSearchCode.setEditable(true);
         txtSearchCode.setText("");
         
@@ -519,13 +578,35 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
         txtSearchCMND.setEditable(false);
         txtSearchCMND.setText("");
         
-        //Reset laÌ£i caÌ�c field search:
+        txtSNameDepartment.setEditable(false);
+        txtSNameDepartment.setText("");
+        
+        //Reset lại các field search:
         this.fieldName = "MaNV";
         this.searchValue= "";
         
-        //ThÆ°Ì£c hiÃªÌ£n truy vÃ¢Ì�n lÃ¢Ì�y laÌ£i tÃ¢Ì�t caÌ‰ caÌ�c department coÌ� trong database:
+        //Thực hiện truy vấn lấy lại tất cả các department có trong database:
         this.showEmployee();
     }//GEN-LAST:event_btnRefeshActionPerformed
+
+    private void rbDepartmentNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbDepartmentNameActionPerformed
+        // TODO add your handling code here:
+        this.fieldName = "TenPB";
+        //Reset radio button DepartmentName:
+        rbCode.setSelected(false);
+        rbName.setSelected(false);
+        
+        //Vô hiệu hóa txtDepartmentName:
+        txtSearchCode.setEditable(false);
+        txtSearchCode.setText("");
+        txtSearchName.setEditable(false);
+        txtSearchName.setText("");
+        txtSearchCMND.setEditable(false);
+        txtSearchCMND.setText("");
+        
+        //Hủy vô hiệu hóa txtDepartmentCode:
+        txtSNameDepartment.setEditable(true);
+    }//GEN-LAST:event_rbDepartmentNameActionPerformed
 
     /**
      * @param args the command line arguments
@@ -572,8 +653,10 @@ public class EmployeeSearch extends javax.swing.JFrame implements DocumentListen
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JRadioButton rbCMND;
     private javax.swing.JRadioButton rbCode;
+    private javax.swing.JRadioButton rbDepartmentName;
     private javax.swing.JRadioButton rbName;
     private javax.swing.JTable tableEmployeeMana;
+    private javax.swing.JTextField txtSNameDepartment;
     private javax.swing.JTextField txtSearchCMND;
     private javax.swing.JTextField txtSearchCode;
     private javax.swing.JTextField txtSearchName;

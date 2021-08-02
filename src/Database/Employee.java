@@ -13,13 +13,14 @@ import java.io.File;
  */
 public class Employee {
     String MaNV, HoTen, NgaySinh, GioiTinh, MaPB, MaCV, DiaChi, CMND, DienThoai, Email, HeSoLuong;
+    
     File file = null;
     
-	public Employee() {
-		super();
-	}
+    public Employee() {
+        super();
+    }
 
-	public Employee(String MaNV, String HoTen, String NgaySinh, String GioiTinh, String MaPB, String MaCV, String DiaChi, String CMND, String DienThoai, String Email, String HeSoLuong) {
+    public Employee(String MaNV, String HoTen, String NgaySinh, String GioiTinh, String MaPB, String MaCV, String DiaChi, String CMND, String DienThoai, String Email, String HeSoLuong) {
         this.MaNV = MaNV;
         this.HoTen = HoTen;
         this.NgaySinh = NgaySinh;
@@ -133,8 +134,8 @@ public class Employee {
     public void setHeSoLuong(String HeSoLuong) {
         this.HeSoLuong = HeSoLuong;
     }
-
-	@Override
+    
+    	@Override
 	public String toString() {
 		return "Employee [MaNV=" + MaNV + ", HoTen=" + HoTen + ", NgaySinh=" + NgaySinh + ", GioiTinh=" + GioiTinh
 				+ ", MaPB=" + MaPB + ", MaCV=" + MaCV + ", DiaChi=" + DiaChi + ", CMND=" + CMND + ", DienThoai="
@@ -148,4 +149,6 @@ public class Employee {
 	public void setFile(File file) {
 		this.file = file;
 	} 
+    
+        
 }

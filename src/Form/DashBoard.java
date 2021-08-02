@@ -48,7 +48,7 @@ public class DashBoard extends javax.swing.JFrame {
         JLogOut = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         btnDepartmentMana = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        jPosition = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         btnEmployeeMana = new javax.swing.JMenuItem();
@@ -59,17 +59,20 @@ public class DashBoard extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
-        jMenuItem12 = new javax.swing.JMenuItem();
+        JSearchEmployee = new javax.swing.JMenuItem();
         jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem14 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         jMenuItem15 = new javax.swing.JMenuItem();
         jReportEmployee = new javax.swing.JMenuItem();
+        jMenu7 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
         jMenuItem18 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Há»‡ thá»‘ng Quáº£n lÃ½ nhÃ¢n sá»± - tiá»�n lÆ°Æ¡ng");
+        setTitle("Hệ thống Quản lý nhân sự - tiền lương");
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/nen2.jpg"))); // NOI18N
 
@@ -78,37 +81,37 @@ public class DashBoard extends javax.swing.JFrame {
 
         jMenu1.setBackground(new java.awt.Color(0, 204, 204));
         jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/system.png"))); // NOI18N
-        jMenu1.setText("Há»‡ thá»‘ng");
+        jMenu1.setText("Hệ thống");
         jMenu1.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
 
         jMenuItem1.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/password.png"))); // NOI18N
-        jMenuItem1.setText("Ä�á»•i máº­t kháº©u");
+        jMenuItem1.setText("Đổi mật khẩu");
         jMenu1.add(jMenuItem1);
 
         jMenuItem2.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Contacts.png"))); // NOI18N
-        jMenuItem2.setText("PhÃ¢n quyá»�n");
+        jMenuItem2.setText("Phân quyền");
         jMenu1.add(jMenuItem2);
 
         jMenuItem9.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/saoluu.png"))); // NOI18N
-        jMenuItem9.setText("Sao lÆ°u dá»¯ liá»‡u");
+        jMenuItem9.setText("Sao lưu dữ liệu");
         jMenu1.add(jMenuItem9);
 
         jMenuItem10.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/ketxuat.png"))); // NOI18N
-        jMenuItem10.setText("Káº¿t xuáº¥t dá»¯ liá»‡u");
+        jMenuItem10.setText("Kết xuất dữ liệu");
         jMenu1.add(jMenuItem10);
 
         jMenuItem11.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/help.png"))); // NOI18N
-        jMenuItem11.setText("Trá»£ giÃºp");
+        jMenuItem11.setText("Trợ giúp");
         jMenu1.add(jMenuItem11);
 
         JLogOut.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         JLogOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Log-Off.png"))); // NOI18N
-        JLogOut.setText("Ä�Äƒng xuáº¥t");
+        JLogOut.setText("Đăng xuất");
         JLogOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JLogOutActionPerformed(evt);
@@ -119,12 +122,12 @@ public class DashBoard extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/danhmuc.png"))); // NOI18N
-        jMenu2.setText("Danh má»¥c");
+        jMenu2.setText("Danh mục");
         jMenu2.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
 
         btnDepartmentMana.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         btnDepartmentMana.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/phongban.png"))); // NOI18N
-        btnDepartmentMana.setText("PhÃ²ng ban");
+        btnDepartmentMana.setText("Phòng ban");
         btnDepartmentMana.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDepartmentManaActionPerformed(evt);
@@ -132,25 +135,30 @@ public class DashBoard extends javax.swing.JFrame {
         });
         jMenu2.add(btnDepartmentMana);
 
-        jMenuItem4.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/chucvu.png"))); // NOI18N
-        jMenuItem4.setText("Chá»©c vá»¥");
-        jMenu2.add(jMenuItem4);
+        jPosition.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        jPosition.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/chucvu.png"))); // NOI18N
+        jPosition.setText("Chức vụ");
+        jPosition.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPositionActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jPosition);
 
         jMenuItem5.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/dollar-collection-icon.png"))); // NOI18N
-        jMenuItem5.setText("Khen thÆ°á»Ÿng/Ká»· luáº­t");
+        jMenuItem5.setText("Khen thưởng/Kỷ luật");
         jMenu2.add(jMenuItem5);
 
         jMenuBar1.add(jMenu2);
 
         jMenu3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/nghiepvu.png"))); // NOI18N
-        jMenu3.setText("NhÃ¢n sá»±");
+        jMenu3.setText("Nhân sự");
         jMenu3.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
 
         btnEmployeeMana.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         btnEmployeeMana.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/hoso.png"))); // NOI18N
-        btnEmployeeMana.setText("Há»“ sÆ¡ NhÃ¢n viÃªn");
+        btnEmployeeMana.setText("Hồ sơ Nhân viên");
         btnEmployeeMana.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEmployeeManaActionPerformed(evt);
@@ -160,64 +168,69 @@ public class DashBoard extends javax.swing.JFrame {
 
         jMenuItem7.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/lylich.png"))); // NOI18N
-        jMenuItem7.setText("LÃ½ lá»‹ch NhÃ¢n viÃªn");
+        jMenuItem7.setText("Lý lịch Nhân viên");
         jMenu3.add(jMenuItem7);
 
         jMenuItem8.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/biendong.png"))); // NOI18N
-        jMenuItem8.setText("Biáº¿n Ä‘á»™ng NhÃ¢n sá»±\n");
+        jMenuItem8.setText("Biến động Nhân sự\n");
         jMenu3.add(jMenuItem8);
 
         jMenuItem16.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/khenthuong.png"))); // NOI18N
-        jMenuItem16.setText("Khen thÆ°á»Ÿng/Ká»· luáº­t");
+        jMenuItem16.setText("Khen thưởng/Kỷ luật");
         jMenu3.add(jMenuItem16);
 
         jMenuBar1.add(jMenu3);
 
         jMenu6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/luong.png"))); // NOI18N
-        jMenu6.setText("Tiá»�n lÆ°Æ¡ng");
+        jMenu6.setText("Tiền lương");
         jMenu6.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
 
         jMenuItem3.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/chamcong.png"))); // NOI18N
-        jMenuItem3.setText("Báº£ng cháº¥m cÃ´ng");
+        jMenuItem3.setText("Bảng chấm công");
         jMenu6.add(jMenuItem3);
 
         jMenuItem6.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/tinhluong.png"))); // NOI18N
-        jMenuItem6.setText("TÃ­nh lÆ°Æ¡ng");
+        jMenuItem6.setText("Tính lương");
         jMenu6.add(jMenuItem6);
 
         jMenuBar1.add(jMenu6);
 
         jMenu4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Search-icon.png"))); // NOI18N
-        jMenu4.setText("TÃ¬m kiáº¿m");
+        jMenu4.setText("Tìm kiếm");
         jMenu4.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
 
-        jMenuItem12.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/user-search-icon.png"))); // NOI18N
-        jMenuItem12.setText("NhÃ¢n viÃªn");
-        jMenu4.add(jMenuItem12);
+        JSearchEmployee.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        JSearchEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/user-search-icon.png"))); // NOI18N
+        JSearchEmployee.setText("Nhân viên");
+        JSearchEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JSearchEmployeeActionPerformed(evt);
+            }
+        });
+        jMenu4.add(JSearchEmployee);
 
         jMenuItem13.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/tkchamcong.png"))); // NOI18N
-        jMenuItem13.setText("Báº£ng cháº¥m cÃ´ng");
+        jMenuItem13.setText("Bảng chấm công");
         jMenu4.add(jMenuItem13);
 
         jMenuItem14.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/tkluong.png"))); // NOI18N
-        jMenuItem14.setText("LÆ°Æ¡ng");
+        jMenuItem14.setText("Lương");
         jMenu4.add(jMenuItem14);
 
         jMenuBar1.add(jMenu4);
 
         jMenu5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/reports-icon.png"))); // NOI18N
-        jMenu5.setText("BÃ¡o cÃ¡o");
+        jMenu5.setText("Báo cáo");
         jMenu5.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
 
         jMenuItem15.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        jMenuItem15.setText("Danh sÃ¡ch PhÃ²ng ban");
+        jMenuItem15.setText("Danh sách Phòng ban");
         jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem15ActionPerformed(evt);
@@ -226,7 +239,7 @@ public class DashBoard extends javax.swing.JFrame {
         jMenu5.add(jMenuItem15);
 
         jReportEmployee.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        jReportEmployee.setText("Danh sÃ¡ch NhÃ¢n viÃªn");
+        jReportEmployee.setText("Danh sách Nhân viên");
         jReportEmployee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jReportEmployeeActionPerformed(evt);
@@ -234,8 +247,21 @@ public class DashBoard extends javax.swing.JFrame {
         });
         jMenu5.add(jReportEmployee);
 
+        jMenu7.setText("Danh sách nhân viên");
+        jMenu7.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+
+        jMenuItem4.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        jMenuItem4.setText("Tất cả");
+        jMenu7.add(jMenuItem4);
+
+        jMenuItem12.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        jMenuItem12.setText("jMenuItem12");
+        jMenu7.add(jMenuItem12);
+
+        jMenu5.add(jMenu7);
+
         jMenuItem17.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        jMenuItem17.setText("Cháº¥m cÃ´ng");
+        jMenuItem17.setText("Chấm công");
         jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem17ActionPerformed(evt);
@@ -244,7 +270,7 @@ public class DashBoard extends javax.swing.JFrame {
         jMenu5.add(jMenuItem17);
 
         jMenuItem18.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        jMenuItem18.setText("LÆ°Æ¡ng");
+        jMenuItem18.setText("Lương");
         jMenu5.add(jMenuItem18);
 
         jMenuBar1.add(jMenu5);
@@ -269,7 +295,7 @@ public class DashBoard extends javax.swing.JFrame {
     private void JLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JLogOutActionPerformed
         // TODO add your handling code here:
         int dialogButton = JOptionPane.YES_NO_OPTION;
-        int dialogResult = JOptionPane.showConfirmDialog (null, "BaÌ£n coÌ� cháº¯c cháº¯n muá»‘n thoÃ¡t khá»�i há»‡ thá»‘ng?","Warning",dialogButton);
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Bạn có chắc chắn muốn thoát khỏi hệ thống?","Warning",dialogButton);
         if(dialogResult == JOptionPane.YES_OPTION){
             this.dispose();
         }
@@ -291,17 +317,17 @@ public class DashBoard extends javax.swing.JFrame {
 
     private void jReportEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jReportEmployeeActionPerformed
         // TODO add your handling code here:
-        //Khai baÌ�o Ä‘Æ°Æ¡Ì€ng dÃ¢Ìƒn Ä‘ÃªÌ�n file StaffManagement:
+        //Khai báo đường dẫn đến file StaffManagement:
         String link = "src\\Reports\\EmployeeBaoCao.jrxml";
         Connection con = null;
         try{
             con = DBConnection.getInstance().getConnection();
 
-            //TaÌ£o JasperReport:
+            //Tạo JasperReport:
             JasperReport jr = JasperCompileManager.compileReport(link);
-            //TaÌ£o JasperPrint:
+            //Tạo JasperPrint:
             JasperPrint jp = JasperFillManager.fillReport(jr, null, con);
-            //TaÌ£o JasperReviewer:
+            //Tạo JasperReviewer:
             JasperViewer.viewReport(jp,false);
         }catch(Exception e){
             e.printStackTrace();
@@ -326,6 +352,19 @@ public class DashBoard extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
+    private void jPositionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPositionActionPerformed
+        // TODO add your handling code here:
+        PositionManagement pm = new PositionManagement();
+        pm.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jPositionActionPerformed
+
+    private void JSearchEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JSearchEmployeeActionPerformed
+        // TODO add your handling code here
+        EmployeeSearch es = new EmployeeSearch();
+        es.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_JSearchEmployeeActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -363,6 +402,7 @@ public class DashBoard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem JLogOut;
+    private javax.swing.JMenuItem JSearchEmployee;
     private javax.swing.JMenuItem btnDepartmentMana;
     private javax.swing.JMenuItem btnEmployeeMana;
     private javax.swing.JLabel jLabel1;
@@ -372,6 +412,7 @@ public class DashBoard extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
+    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
@@ -391,6 +432,7 @@ public class DashBoard extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JMenuItem jPosition;
     private javax.swing.JMenuItem jReportEmployee;
     // End of variables declaration//GEN-END:variables
 }

@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,12 +19,10 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.imageio.ImageIO;
 
 /**
@@ -48,10 +47,10 @@ public class EmployeeModify {
         return s + temp;
     }
     
-    //LÃ¢Ì�y tÃ¢Ì�t caÌ‰ danh saÌ�ch caÌ�c nhÃ¢n viÃªn:
+    //Lấy tất cả danh sách các nhân viên:
     public static List<EmployeeReport> findAll() {
         List<EmployeeReport> employeeList = new ArrayList<>();
-        //KÃªÌ�t nÃ´Ì�i database:
+        //Kết nối database:
         Connection con = null;
         Statement stmt = null;        
         try {
@@ -61,7 +60,7 @@ public class EmployeeModify {
             stmt = con.createStatement();            
             ResultSet rs = stmt.executeQuery(query);
             
-            //Ä�oÌ£c dÆ°Ìƒ liÃªÌ£u tÆ°Ì€ rs Ä‘Æ°Æ¡Ì£c traÌ‰ vÃªÌ€:
+            //Đọc dữ liệu từ rs được trả về:
             while(rs.next()){
                 EmployeeReport employee = new EmployeeReport(
                         rs.getString("MaNV"),
@@ -102,10 +101,10 @@ public class EmployeeModify {
         return employeeList;
     }
     
-    //LÃ¢Ì�y tÃ¢Ì�t caÌ‰ danh saÌ�ch caÌ�c nhÃ¢n viÃªn:
+    //Lấy tất cả danh sách các nhân viên:
     public static List<Employee> findAllReport() {
         List<Employee> employeeLreport = new ArrayList<>();
-        //KÃªÌ�t nÃ´Ì�i database:
+        //Kết nối database:
         Connection con = null;
         Statement stmt = null;        
         try {
@@ -115,7 +114,7 @@ public class EmployeeModify {
             stmt = con.createStatement();            
             ResultSet rs = stmt.executeQuery(query);
             
-            //Ä�oÌ£c dÆ°Ìƒ liÃªÌ£u tÆ°Ì€ rs Ä‘Æ°Æ¡Ì£c traÌ‰ vÃªÌ€:
+            //Đọc dữ liệu từ rs được trả về:
             while(rs.next()){
                 Employee employeereport = new Employee(
                         rs.getString("MaNV"),
@@ -155,10 +154,10 @@ public class EmployeeModify {
         return employeeLreport;
     }
     
-    //LÃ¢Ì�y tÃ¢Ì�t caÌ‰ danh saÌ�ch caÌ�c bÃ´Ì£ phÃ¢Ì£n:
+    //Lấy tất cả danh sách các bộ phận:
     public static List<Department> getAllDepartment() {
         List<Department> departmentList = new ArrayList<>(); 
-        //KÃªÌ�t nÃ´Ì�i database:
+        //Kết nối database:
         Connection con = null;
         Statement stmt = null;
         try {
@@ -170,7 +169,7 @@ public class EmployeeModify {
             
             ResultSet rs = stmt.executeQuery(query);
             
-            //Ä�oÌ£c dÆ°Ìƒ liÃªÌ£u tÆ°Ì€ rs Ä‘Æ°Æ¡Ì£c traÌ‰ vÃªÌ€:
+            //Đọc dữ liệu từ rs được trả về:
             while(rs.next()){
                 Department department = new Department(
                         rs.getString("MaPB"),
@@ -206,10 +205,10 @@ public class EmployeeModify {
     }
     
     
-    //LÃ¢Ì�y danh saÌ�ch tÃ¢Ì�t caÌ‰ name cuÌ‰a phoÌ€ng ban:
+    //Lấy danh sách tất cả name của phòng ban:
     public static List<String> getAllDepartmentName(){
         List<String> departmentNameList = new ArrayList<>();
-        //KÃªÌ�t nÃ´Ì�i database:
+        //Kết nối database:
         Connection con = null;
         Statement stmt = null;
         
@@ -222,7 +221,7 @@ public class EmployeeModify {
             
             ResultSet rs = stmt.executeQuery(query);
             
-            //Ä�oÌ£c dÆ°Ìƒ liÃªÌ£u tÆ°Ì€ rs Ä‘Æ°Æ¡Ì£c traÌ‰ vÃªÌ€:
+            //Đọc dữ liệu từ rs được trả về:
             while(rs.next()){
                 String id = rs.getString("TenPB");
                         
@@ -253,10 +252,10 @@ public class EmployeeModify {
         return departmentNameList;
     } 
     
-    //LÃ¢Ì�y tÃ¢Ì�t caÌ‰ danh saÌ�ch caÌ�c nhÃ¢n viÃªn dÆ°Ì£a trÃªn MaNV:
+    //Lấy tất cả danh sách các nhân viên dựa trên MaNV:
     public static String getDepartmentID(String departmentName) {
         String departmentID = null;
-        //KÃªÌ�t nÃ´Ì�i database:
+        //Kết nối database:
         Connection con = null;
         PreparedStatement preStmt = null;
         
@@ -271,7 +270,7 @@ public class EmployeeModify {
             
             ResultSet rs = preStmt.executeQuery();
             
-            //Ä�oÌ£c dÆ°Ìƒ liÃªÌ£u tÆ°Ì€ rs Ä‘Æ°Æ¡Ì£c traÌ‰ vÃªÌ€:
+            //Đọc dữ liệu từ rs được trả về:
             while(rs.next()){
                 departmentID = rs.getString("MaPB");
             }
@@ -300,10 +299,10 @@ public class EmployeeModify {
         return departmentID;
     }  
     
-    //LÃ¢Ì�y danh saÌ�ch tÃ¢Ì�t caÌ‰ name cuÌ‰a chÆ°Ì�c vuÌ£:
+    //Lấy danh sách tất cả name của chức vụ:
     public static List<String> getAllRoleName(){
         List<String> roleNameList = new ArrayList<>();
-        //KÃªÌ�t nÃ´Ì�i database:
+        //Kết nối database:
         Connection con = null;
         Statement stmt = null;
         
@@ -316,7 +315,7 @@ public class EmployeeModify {
             
             ResultSet rs = stmt.executeQuery(query);
             
-            //Ä�oÌ£c dÆ°Ìƒ liÃªÌ£u tÆ°Ì€ rs Ä‘Æ°Æ¡Ì£c traÌ‰ vÃªÌ€:
+            //Đọc dữ liệu từ rs được trả về:
             while(rs.next()){
                 String id = rs.getString("TenCV");
                         
@@ -348,12 +347,12 @@ public class EmployeeModify {
     }
     
     
-    //LÃ¢Ì�y tÃ¢Ì�t caÌ‰ danh saÌ�ch caÌ�c nhÃ¢n viÃªn dÆ°Ì£a trÃªn MaNV:
+    //Lấy tất cả danh sách các nhân viên dựa trên MaNV:
     public static List<EmployeeReport> findByMaNV(String MaNV) {
         
         List<EmployeeReport> employeeList = new ArrayList<>();
         
-        //KÃªÌ�t nÃ´Ì�i database:
+        //Kết nối database:
         Connection con = null;
         PreparedStatement preStmt = null;
         
@@ -370,7 +369,7 @@ public class EmployeeModify {
             
             ResultSet rs = preStmt.executeQuery();
             
-            //Ä�oÌ£c dÆ°Ìƒ liÃªÌ£u tÆ°Ì€ rs Ä‘Æ°Æ¡Ì£c traÌ‰ vÃªÌ€:
+            //Đọc dữ liệu từ rs được trả về:
             while(rs.next()){
                 EmployeeReport employee = new EmployeeReport(
                         rs.getString("MaNV"),
@@ -413,12 +412,12 @@ public class EmployeeModify {
         return employeeList;
     }
     
-    //LÃ¢Ì�y tÃ¢Ì�t caÌ‰ danh saÌ�ch cÃ¡c nhÃ¢n viÃªn dÆ°Ì£a trÃªn há»� tÃªn nhÃ¢n viÃªn:
+    //Lấy tất cả danh sách các nhân viên dựa trên họ tên nhân viên:
     public static List<EmployeeReport> findByHoTen(String HoTen) {
         
         List<EmployeeReport> employeeList = new ArrayList<>();
         
-        //KÃªÌ�t nÃ´Ì�i database:
+        //Kết nối database:
         Connection con = null;
         PreparedStatement preStmt = null;
         
@@ -477,12 +476,12 @@ public class EmployeeModify {
         return employeeList;
     }
     
-    //LÃ¢Ì�y tÃ¢Ì�t caÌ‰ danh saÌ�ch caÌ�c nhÃ¢n viÃªn dÆ°Ì£a trÃªn MaNV:
+    //Lấy tất cả danh sách các nhân viên dựa trên MaNV:
     public static List<EmployeeReport> findByCMND(String CMND) {
         
         List<EmployeeReport> employeeList = new ArrayList<>();
         
-        //KÃªÌ�t nÃ´Ì�i database:
+        //Kết nối database:
         Connection con = null;
         PreparedStatement preStmt = null;
         
@@ -499,7 +498,72 @@ public class EmployeeModify {
             
             ResultSet rs = preStmt.executeQuery();
             
-            //Ä�oÌ£c dÆ°Ìƒ liÃªÌ£u tÆ°Ì€ rs Ä‘Æ°Æ¡Ì£c traÌ‰ vÃªÌ€:
+            //Đọc dữ liệu từ rs được trả về:
+            while(rs.next()){
+                EmployeeReport employee = new EmployeeReport(
+                        rs.getString("MaNV"),
+                        rs.getString("HoTen"),
+                        rs.getString("NgaySinh"),
+                        rs.getString("GioiTinh"),
+                        rs.getString("TenPB"),
+                        rs.getString("TenCV"),
+                        rs.getString("DiaChi"),
+                        rs.getString("CMND"),
+                        rs.getString("DienThoai"),
+                        rs.getString("Email"),
+                        rs.getString("HeSoLuong"));
+                employeeList.add(employee);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeModify.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            
+            if(preStmt != null)
+            {
+                try {
+                    preStmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(EmployeeModify.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            if(con != null)
+            {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(EmployeeModify.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        
+        return employeeList;
+    }
+    
+    //Lấy tất cả danh sách các nhân viên dựa trên MaNV:
+    public static List<EmployeeReport> findByTenPB(String TenPB) {
+        
+        List<EmployeeReport> employeeList = new ArrayList<>();
+        
+        //Kết nối database:
+        Connection con = null;
+        PreparedStatement preStmt = null;
+        
+        try {
+            con = DBConnection.getInstance().getConnection();
+            
+            //Query:
+            String query = "SELECT MaNV, HoTen, NgaySinh, GioiTinh, TenPB, TenCV, DiaChi, CMND, DienThoai, NhanVien.Email, HeSoLuong\r\n" + 
+            		"FROM dbo.NhanVien, dbo.ChucVu, dbo.PhongBan\r\n" + 
+            		"WHERE NhanVien.MaPB = PhongBan.MaPB AND ChucVu.MaCV = NhanVien.MaCV AND TenPB LIKE ?";
+            preStmt = con.prepareStatement(query);
+            
+            preStmt.setString(1, "%" + TenPB + "%");
+            
+            ResultSet rs = preStmt.executeQuery();
+            
+            //Đọc dữ liệu từ rs được trả về:
             while(rs.next()){
                 EmployeeReport employee = new EmployeeReport(
                         rs.getString("MaNV"),
@@ -543,7 +607,7 @@ public class EmployeeModify {
     }
     
     public static void insert(Employee employeereport) throws ParseException{         
-        //TiÌ€m all caÌ�c department coÌ� trong database Ä‘ÃªÌ‰ xem Ä‘i check primary key:
+        //Tìm all các department có trong database để xem đi check primary key:
         List<Employee> temp = findAllReport();
         
         boolean check;
@@ -559,14 +623,15 @@ public class EmployeeModify {
                 }
             }
         }while(check);        
-        //KÃªÌ�t nÃ´Ì�i database:
+        //Kết nối database:
         Connection con = null;
         PreparedStatement preStmt = null;
         
         try {
-            con = DBConnection.getInstance().getConnection();            
-            //KiÃªÌ‰m tra MaNV coÌ� duy nhÃ¢Ì�t khÃ´ng rÃ´Ì€i mÆ¡Ì�i thÃªm vaÌ€o NhanVien
-            //hoÄƒÌ£c coÌ� mÃ´Ì£t caÌ�ch khaÌ�c laÌ€ khÃ´ng Ä‘ÃªÌ‰ cho ngÆ°Æ¡Ì€i duÌ€ng nhÃ¢Ì£p MaNV => MaNV tÆ°Ì£ generate ra.
+            con = DBConnection.getInstance().getConnection();             
+            //Kiểm tra MaNV có duy nhất không rồi mới thêm vào NhanVien
+            //hoặc có một cách khác là không để cho người dùng nhập MaNV => MaNV tự generate ra.
+           
             String query = "select MaPB from PhongBan where TenPB = N'" + employeereport.getMaPB() + "'";
             ResultSet rs = con.createStatement().executeQuery(query);
             rs.next();
@@ -627,9 +692,9 @@ public class EmployeeModify {
         
     }
     
-    public static void update(Employee employeereport) throws ParseException, IOException{
+    public static void update(Employee employeereport) throws FileNotFoundException, ParseException{
         
-         //KÃªÌ�t nÃ´Ì�i database:
+         //Kết nối database:
         Connection con = null;
         PreparedStatement preStmt = null;
         
@@ -694,7 +759,7 @@ public class EmployeeModify {
     
     public static void delete(String MaNV){
         
-         //KÃªÌ�t nÃ´Ì�i database:
+         //Kết nối database:
         Connection con = null;
         PreparedStatement preStmt = null;
         

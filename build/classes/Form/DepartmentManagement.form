@@ -234,7 +234,7 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Times New Roman" size="16" style="1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="M&#xf4; t&#x1ea3;:"/>
+                <Property name="text" type="java.lang.String" value="Ch&#x1ee9;c n&#x103;ng:"/>
               </Properties>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane2">

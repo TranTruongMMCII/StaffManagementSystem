@@ -133,9 +133,7 @@ public class DepartmentManagement extends javax.swing.JFrame implements Document
         {
             //Gán giá trị tìm kiếm để cần khi tìm kiếm chính xác:
             this.searchValue = txtSearchName.getText().trim();
-            System.out.println("Dang o departmentcode searching...");
             String departmentName = txtSearchName.getText().trim();
-            System.out.println(departmentName);
             //Khi thay đổi txtDepartmentCode thì gọi database:
             this.showSearchResult("TenPB",departmentName);            
         }
@@ -149,19 +147,14 @@ public class DepartmentManagement extends javax.swing.JFrame implements Document
             //Show all department:
             this.showDepartment();
         }
-        else if(fieldName.equals("TenPB")){
-            System.out.println("Searching TenPB...");
-            
-            this.departmentList = DepartmentModify.findByTenPB(searchValue);
-            System.out.println("Done searching TenPB...");
-            
+        else if(fieldName.equals("TenPB")){            
+            this.departmentList = DepartmentModify.findByTenPB(searchValue);            
             //Đưa các bộ đếm hàng về 0:
             int rowsToRemove = this.tableModel.getRowCount();
             for(int i = rowsToRemove - 1; i>=0; i--)
             {
                 this.tableModel.removeRow(i);
-            }
-            
+            }            
             this.tableModel.setRowCount(0);
             //Reset lại tableModel:
             
@@ -300,7 +293,7 @@ public class DepartmentManagement extends javax.swing.JFrame implements Document
         dateChStartDay.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel5.setText("Mô tả:");
+        jLabel5.setText("Chức năng:");
 
         txtAreaDescription.setColumns(20);
         txtAreaDescription.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N

@@ -12,8 +12,6 @@ import Database.EmployeeModify;
 import com.toedter.calendar.JTextFieldDateEditor;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,12 +24,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -40,13 +36,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.view.JasperViewer;
 
-import java.awt.BorderLayout;
-import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.MouseAdapter;
-import java.awt.Color;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.Icon;
 import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
@@ -56,20 +47,24 @@ import javax.swing.LayoutStyle.ComponentPlacement;
  */
 public class EmployeeManagement extends javax.swing.JFrame {
     
-    List<EmployeeReport> employeeList = new ArrayList<>();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public static String manv = "";
+	List<EmployeeReport> employeeList = new ArrayList<>();
     List<String> departmentList= new ArrayList<>();
     List<String> roleNameList= new ArrayList<>();
     File file = null;
     
-    //LÆ°u index row Ä‘ang Ä‘Æ°Æ¡Ì£c choÌ£n:
+    //Lưu index row đang được chọn:
     int selectedIndex = -1;
     
-    //DuÌ€ng Ä‘ÃªÌ‰ thao taÌ�c trÃªn baÌ‰ng:
+    //Dùng để thao tác trên bảng:
     DefaultTableModel tableModel;
     
-    //LÆ°u chÆ°Ì�c nÄƒng hiÃªÌ£n Ä‘ang sÆ°Ì‰ duÌ£ng Ä‘ÃªÌ‰ sÆ°Ì‰ duÌ£ng nuÌ�t lÆ°u vaÌ€ huÌ‰y:
+    //Lưu chức năng hiện đang sử dụng để sử dụng nút lưu và hủy:
     String funcName;
-    private Object jOptionPane1;
 
     /**
      * Creates new form EmployeeManagement
@@ -77,24 +72,26 @@ public class EmployeeManagement extends javax.swing.JFrame {
     public EmployeeManagement() {
         initComponents();
         
-        //Ä�Ã´Ì‰ dÆ°Ìƒ liÃªÌ£u vaÌ€o table khi bÃ¢Ì£t chÆ°Ì�c nÄƒng naÌ€y lÃªn:
+        //Đổ dữ liệu vào table khi bật chức năng này lên:
         tableModel = (DefaultTableModel) tableEmployeeMana.getModel();
         showEmployee();
         
-        //GiuÌ�p cho textArea tÆ°Ì£ xuÃ´Ì�ng doÌ€ng:
+        //Giúp cho textArea tự xuống dòng:
         txtAddress.setLineWrap(true);
         txtAddress.setWrapStyleWord(true);
         
-        //KhoÌ�a chÆ°Ì�c nÄƒng nhÃ¢Ì£p trÆ°Ì£c tiÃªÌ�p ngaÌ€y cuÌ‰a datechooser:
+        //Khóa chức năng nhập trực tiếp ngày của datechooser:
         JTextFieldDateEditor dateEditor = (JTextFieldDateEditor) dateChBirthday.getDateEditor();
-        dateEditor.setEditable(false); 
+        dateEditor.setEditable(false);
         
-        //Ä�Ã´Ì‰ giÆ¡Ì�i tiÌ�nh vaÌ€o cbGender -> Ä‘aÌƒ Ä‘Ã´Ì‰ mÄƒÌ£c Ä‘iÌ£nh bÃªn design
+        txtSearchName.setEditable(false);
         
-        //Ä�Ã´Ì‰ dÆ°Ìƒ liÃªÌ£u MaPBList vaÌ€o cbBoxMaPB:
+        //Đổ giới tính vào cbGender -> đã đổ mặc định bên design
+        
+        //Đổ dữ liệu MaPBList vào cbBoxMaPB:
         showComboBoxTenPB();
         
-        //Ä�Ã´Ì‰ dÆ°Ìƒ liÃªÌ£u MaCVList vaÌ€o cbBoxMaCV:
+        //Đổ dữ liệu MaCVList vào cbBoxMaCV:
         showComboBoxTenCV();
         
         this.resetForm();
@@ -114,9 +111,9 @@ public class EmployeeManagement extends javax.swing.JFrame {
                     
                     txtEmployeeCode.setText(employee.getMaNV());
                     txtEmployeeName.setText(employee.getHoTen());
-                    //LÃ¢Ì�y ngaÌ€y:
+                    //Lấy ngày:
                     try {
-                        //ChuÃ´Ìƒi ban Ä‘Ã¢Ì€u lÆ°u: yyyy-MM-dd:
+                        //Chuỗi ban đầu lưu: yyyy-MM-dd:
                         String bdStr = employee.getNgaySinh();
 
                         Date bdDate = new SimpleDateFormat("yyyy-MM-dd").parse(bdStr);
@@ -141,27 +138,22 @@ public class EmployeeManagement extends javax.swing.JFrame {
                     txtSalary.setText(employee.getHeSoLuong());
                     if(employee.getBytes() != null) {
                     	byte[] data = employee.getBytes();
-                    	ByteArrayInputStream bis = new ByteArrayInputStream(data);
-                    	BufferedImage bImage2 = null;
-                        try {
-                        	bImage2 = ImageIO.read(bis);
+                    	try {
                         	OutputStream targetFile = new FileOutputStream("tmp.jpg");
                         	targetFile.write(data);
                         	targetFile.close();
-    	                    ImageIcon icon = new ImageIcon(new ImageIcon("tmp.jpg").getImage().getScaledInstance(jPanel4.getWidth(), jPanel4.getHeight(), Image.SCALE_DEFAULT));
-    						lblNewLabel.setIcon(icon);
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
+    	                    ImageIcon icon = new ImageIcon(new ImageIcon("tmp.jpg").getImage().getScaledInstance(jpHinh.getWidth(), jpHinh.getHeight(), Image.SCALE_DEFAULT));
+                            lblNewLabel.setIcon(icon);
+                                } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                    e1.printStackTrace();
+                                }
+                            }
                     else {
-//                    	System.out.println("Image null");
                     }
                 }
             }
-            
-            @Override
+                        @Override
             public void mouseEntered(MouseEvent e){  
             }
             
@@ -179,11 +171,11 @@ public class EmployeeManagement extends javax.swing.JFrame {
         this.departmentList = EmployeeModify.getAllDepartmentName();
         
         for(String s: departmentList){
-            //ViÌ€ do database noÌ� lÆ°u thÆ°Ì€a kiÌ� tÆ°Ì£ khoaÌ‰ng trÄƒÌ�ng nÃªn phaÌ‰i xoÌ�a (duÌ€ng trim()):
+            //Vì do database nó lưu thừa kí tự khoảng trắng nên phải xóa (dùng trim()):
             cbDepartment.addItem(s.trim());
         }
         
-        //Set giaÌ� triÌ£ mÄƒÌ£c Ä‘iÌ£nh ban Ä‘Ã¢Ì€u laÌ€ index 0:
+        //Set giá trị mặc định ban đầu là index 0:
         cbDepartment.setSelectedIndex(0);
     }
             
@@ -191,21 +183,21 @@ public class EmployeeManagement extends javax.swing.JFrame {
         this.roleNameList = EmployeeModify.getAllRoleName();
         
         for(String s: roleNameList){
-            //ViÌ€ do database noÌ� lÆ°u thÆ°Ì€a kiÌ� tÆ°Ì£ khoaÌ‰ng trÄƒÌ�ng nÃªn phaÌ‰i xoÌ�a (duÌ€ng trim()):
+            //Vì do database nó lưu thừa kí tự khoảng trắng nên phải xóa (dùng trim()):
             cbRole.addItem(s.trim());
         }
         
-        //Set giaÌ� triÌ£ mÄƒÌ£c Ä‘iÌ£nh ban Ä‘Ã¢Ì€u laÌ€ index 0:
+        //Set giá trị mặc định ban đầu là index 0:
         cbRole.setSelectedIndex(0);
     }
         private void setComboBoxGender(String value){
-        //Do trong database noÌ� lÆ°u Nam vÆ¡Ì�i NÆ°Ìƒ biÌ£ dÆ° vaÌ€i dÃ¢Ì�u khoaÌ‰ng trÄƒÌ�ng...
+        //Do trong database nó lưu Nam với Nữ bị dư vài dấu khoảng trắng...
         if(value.trim().equals("Nam"))
         {
             cbBoxGender.setSelectedIndex(0); // Nam
         }
         else{
-            cbBoxGender.setSelectedIndex(1); // NÆ°Ìƒ
+            cbBoxGender.setSelectedIndex(1); // Nữ
         }
     }
     private void setComboBoxTenPB(String value){
@@ -228,12 +220,12 @@ public class EmployeeManagement extends javax.swing.JFrame {
         }
     }    
     
-    //HiÃªÌ‰n thiÌ£ dÆ°Ìƒ liÃªÌ£u lÃªn table:
+    //Hiển thị dữ liệu lên table:
     private void showEmployee(){
         
         this.employeeList = EmployeeModify.findAll();
         
-        //Ä�Æ°a caÌ�c bÃ´Ì£ Ä‘ÃªÌ�m haÌ€ng vÃªÌ€ 0:
+        //Đưa các bộ đếm hàng về 0:
         tableModel.setRowCount(0);
         for(EmployeeReport employee: employeeList){
             tableModel.addRow(new Object[] {
@@ -290,9 +282,12 @@ public class EmployeeManagement extends javax.swing.JFrame {
         txtEmployeeCode.setEditable(false);
         txtEmployeeName.setEditable(false);
         txtAddress.setEditable(false);
-        
         lblNewLabel.setIcon(null);
         
+        txtSearchName.setEditable(false);
+        
+        //Mở các chức năng tìm kiếm
+        btnSearch.setEnabled(true);  
     }
 
     /**
@@ -300,7 +295,7 @@ public class EmployeeManagement extends javax.swing.JFrame {
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
-    @SuppressWarnings("unchecked")
+    
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -329,45 +324,14 @@ public class EmployeeManagement extends javax.swing.JFrame {
         txtCMND = new javax.swing.JTextField();
         cbDepartment = new javax.swing.JComboBox<>();
         cbRole = new javax.swing.JComboBox<>();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel4.setBackground(Color.WHITE);
-        lblNewLabel = new JLabel("");
-        lblNewLabel.setEnabled(false);
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4Layout.setHorizontalGroup(
-        	jPanel4Layout.createParallelGroup(Alignment.LEADING)
-        		.addComponent(lblNewLabel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-        	jPanel4Layout.createParallelGroup(Alignment.LEADING)
-        		.addComponent(lblNewLabel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
-        );
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4.addMouseListener(new MouseAdapter() {
-        	@Override
-        	public void mouseClicked(MouseEvent e) {
-        		JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-				fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
-				int result = fileChooser.showOpenDialog(getParent());
-				if (result == JFileChooser.APPROVE_OPTION) {
-				    file = fileChooser.getSelectedFile();
-				    ImageIcon icon = new ImageIcon(new ImageIcon(file.getAbsolutePath())
-			        		.getImage().getScaledInstance(jPanel4.getWidth(), jPanel4.getHeight(), Image.SCALE_DEFAULT));
-			        lblNewLabel.setIcon(icon);
-				}
-        	}
-        });
+        jpHinh = new javax.swing.JPanel();
+        lblNewLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableEmployeeMana = new javax.swing.JTable();
-        tableEmployeeMana.setRowSelectionAllowed(false);
         txtSearchName = new javax.swing.JTextField();
-        btnPrintEmployee = new javax.swing.JButton();
         btnSearch = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         btnAdd = new javax.swing.JButton();
         btnEdit = new javax.swing.JButton();
@@ -375,30 +339,31 @@ public class EmployeeManagement extends javax.swing.JFrame {
         btnDelete = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
         btnRefresh = new javax.swing.JButton();
+        btnPrintEmployee = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 28)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel1.setText("QUáº¢N LÃ� NHÃ‚N Sá»°");
+        jLabel1.setText("QUẢN LÝ NHÂN SỰ");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Chi tiáº¿t", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 2, 18))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Chi tiết", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 2, 18))); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel2.setText("MÃ£ nhÃ¢n viÃªn:");
+        jLabel2.setText("Mã nhân viên:");
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel3.setText("Há»� tÃªn NV:");
+        jLabel3.setText("Họ tên NV:");
 
         jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel4.setText("NgÃ y sinh:");
+        jLabel4.setText("Ngày sinh:");
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel5.setText("PhÃ²ng ban:");
+        jLabel5.setText("Phòng ban:");
 
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel6.setText("Giá»›i tÃ­nh:");
+        jLabel6.setText("Giới tính:");
 
         txtEmployeeCode.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         txtEmployeeCode.addActionListener(new java.awt.event.ActionListener() {
@@ -409,17 +374,17 @@ public class EmployeeManagement extends javax.swing.JFrame {
 
         txtEmployeeName.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
 
-        cbBoxGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nam", "Ná»¯" }));
+        cbBoxGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nam", "Nữ" }));
 
         txtEmail.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
 
         jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel7.setText("Chá»©c vá»¥:");
+        jLabel7.setText("Chức vụ:");
 
         txtSalary.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
 
         jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel8.setText("Ä�á»‹a chá»‰:");
+        jLabel8.setText("Địa chỉ:");
 
         txtAddress.setColumns(20);
         txtAddress.setRows(5);
@@ -434,14 +399,36 @@ public class EmployeeManagement extends javax.swing.JFrame {
         jLabel10.setText("Email:");
 
         jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel11.setText("Ä�iá»‡n thoáº¡i:");
+        jLabel11.setText("Điện thoại:");
 
         jLabel12.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel12.setText("Há»‡ sá»‘ lÆ°Æ¡ng:");
+        jLabel12.setText("Hệ số lương:");
 
         txtCMND.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
 
-        
+        jpHinh.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jpHinh.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jpHinhMouseClicked(evt);
+            }
+        });
+
+        lblNewLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblNewLabelMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jpHinhLayout = new javax.swing.GroupLayout(jpHinh);
+        jpHinh.setLayout(jpHinhLayout);
+        jpHinhLayout.setHorizontalGroup(
+            jpHinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblNewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+        );
+        jpHinhLayout.setVerticalGroup(
+            jpHinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblNewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1Layout.setHorizontalGroup(
@@ -494,16 +481,15 @@ public class EmployeeManagement extends javax.swing.JFrame {
         					.addComponent(jLabel9)
         					.addGap(67)
         					.addComponent(txtCMND, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)))
-        			.addGap(94)
-        			.addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addGap(27))
+        			.addGap(33)
+        			.addComponent(jpHinh, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        			.addGap(33))
         );
         jPanel1Layout.setVerticalGroup(
         	jPanel1Layout.createParallelGroup(Alignment.LEADING)
         		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addGap(12)
         			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        				.addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         				.addGroup(jPanel1Layout.createSequentialGroup()
         					.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
         						.addComponent(jLabel5)
@@ -516,6 +502,7 @@ public class EmployeeManagement extends javax.swing.JFrame {
         					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
         						.addComponent(jLabel8, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
         						.addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)))
+        				.addComponent(jpHinh, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         				.addGroup(jPanel1Layout.createSequentialGroup()
         					.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
         						.addComponent(jLabel2)
@@ -551,11 +538,11 @@ public class EmployeeManagement extends javax.swing.JFrame {
         							.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
         								.addComponent(txtSalary, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         								.addComponent(jLabel12))))))
-        			.addContainerGap(35, Short.MAX_VALUE))
+        			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1.setLayout(jPanel1Layout);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ThÃ´ng tin chi tiáº¿t", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 2, 18))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thông tin chi tiết", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 2, 18))); // NOI18N
 
         tableEmployeeMana.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -565,15 +552,25 @@ public class EmployeeManagement extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "MÃ£ NV", "Há»� TÃªn", "NgÃ y Sinh", "Giá»›i TÃ­nh", "PhÃ²ng Ban", "Chá»©c Vá»¥", "Ä�á»‹a Chá»‰", "CMND", "Ä�iá»‡n Thoáº¡i", "Email", "Há»‡ Sá»‘ LÆ°Æ¡ng"
+                "STT", "Mã NV", "Họ Tên", "Ngày Sinh", "Giới Tính", "Phòng Ban", "Chức Vụ", "Địa Chỉ", "CMND", "Điện Thoại", "Email", "Hệ Số Lương"
             }
         ) {
-            Class[] types = new Class [] {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			@SuppressWarnings("rawtypes")
+			Class[] types = new Class [] {
                 java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Integer.class
             };
 
-            public Class getColumnClass(int columnIndex) {
+            public Class<?> getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+        });
+        tableEmployeeMana.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tableEmployeeManaMousePressed(evt);
             }
         });
         jScrollPane1.setViewportView(tableEmployeeMana);
@@ -587,9 +584,9 @@ public class EmployeeManagement extends javax.swing.JFrame {
             tableEmployeeMana.getColumnModel().getColumn(2).setMinWidth(130);
             tableEmployeeMana.getColumnModel().getColumn(2).setPreferredWidth(130);
             tableEmployeeMana.getColumnModel().getColumn(2).setMaxWidth(130);
-            tableEmployeeMana.getColumnModel().getColumn(3).setMinWidth(80);
-            tableEmployeeMana.getColumnModel().getColumn(3).setPreferredWidth(80);
-            tableEmployeeMana.getColumnModel().getColumn(3).setMaxWidth(80);
+            tableEmployeeMana.getColumnModel().getColumn(3).setMinWidth(85);
+            tableEmployeeMana.getColumnModel().getColumn(3).setPreferredWidth(85);
+            tableEmployeeMana.getColumnModel().getColumn(3).setMaxWidth(85);
             tableEmployeeMana.getColumnModel().getColumn(4).setMinWidth(65);
             tableEmployeeMana.getColumnModel().getColumn(4).setPreferredWidth(65);
             tableEmployeeMana.getColumnModel().getColumn(4).setMaxWidth(65);
@@ -607,19 +604,18 @@ public class EmployeeManagement extends javax.swing.JFrame {
             tableEmployeeMana.getColumnModel().getColumn(11).setMaxWidth(77);
         }
 
-        btnPrintEmployee.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        btnPrintEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/print-icon.png"))); // NOI18N
-        btnPrintEmployee.setText("In");
-        btnPrintEmployee.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPrintEmployeeActionPerformed(evt);
-            }
-        });
-
         btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/timkiem.png"))); // NOI18N
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSearchActionPerformed(evt);
+            }
+        });
+
+        jButton1.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        jButton1.setText("Lý lịch");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -628,7 +624,7 @@ public class EmployeeManagement extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(btnPrintEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -642,16 +638,17 @@ public class EmployeeManagement extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnPrintEmployee)
-                    .addComponent(btnSearch)
-                    .addComponent(txtSearchName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnSearch)
+                        .addComponent(txtSearchName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         btnAdd.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/add.png"))); // NOI18N
-        btnAdd.setText("ThÃªm");
+        btnAdd.setText("Thêm");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -660,7 +657,7 @@ public class EmployeeManagement extends javax.swing.JFrame {
 
         btnEdit.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/edit-icon.png"))); // NOI18N
-        btnEdit.setText("Sá»­a");
+        btnEdit.setText("Sửa");
         btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditActionPerformed(evt);
@@ -669,7 +666,7 @@ public class EmployeeManagement extends javax.swing.JFrame {
 
         btnCancel.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/xoa.png"))); // NOI18N
-        btnCancel.setText("Há»§y");
+        btnCancel.setText("Hủy");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);
@@ -678,7 +675,7 @@ public class EmployeeManagement extends javax.swing.JFrame {
 
         btnDelete.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Delete-icon.png"))); // NOI18N
-        btnDelete.setText("XÃ³a");
+        btnDelete.setText("Xóa");
         btnDelete.setMaximumSize(new java.awt.Dimension(87, 29));
         btnDelete.setMinimumSize(new java.awt.Dimension(87, 29));
         btnDelete.setPreferredSize(new java.awt.Dimension(87, 29));
@@ -690,25 +687,29 @@ public class EmployeeManagement extends javax.swing.JFrame {
 
         btnSave.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/luu.png"))); // NOI18N
-        btnSave.setText("LÆ°u");
+        btnSave.setText("Lưu");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-					btnSaveActionPerformed(evt);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                btnSaveActionPerformed(evt);
             }
         });
 
         btnRefresh.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         btnRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Refresh-icon.png"))); // NOI18N
-        btnRefresh.setText("LÃ m má»›i");
+        btnRefresh.setText("Làm mới");
         btnRefresh.setPreferredSize(new java.awt.Dimension(100, 29));
         btnRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRefreshActionPerformed(evt);
+            }
+        });
+
+        btnPrintEmployee.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        btnPrintEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/print-icon.png"))); // NOI18N
+        btnPrintEmployee.setText("In");
+        btnPrintEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrintEmployeeActionPerformed(evt);
             }
         });
 
@@ -721,15 +722,17 @@ public class EmployeeManagement extends javax.swing.JFrame {
                 .addComponent(btnAdd)
                 .addGap(48, 48, 48)
                 .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                .addGap(44, 44, 44)
                 .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
+                .addGap(44, 44, 44)
                 .addComponent(btnSave)
-                .addGap(57, 57, 57)
+                .addGap(51, 51, 51)
                 .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42)
+                .addGap(45, 45, 45)
                 .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addComponent(btnPrintEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -741,7 +744,8 @@ public class EmployeeManagement extends javax.swing.JFrame {
                     .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPrintEmployee)))
         );
 
         btnBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/exit.png"))); // NOI18N
@@ -758,9 +762,6 @@ public class EmployeeManagement extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(162, 162, 162)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(390, 390, 390)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -769,6 +770,10 @@ public class EmployeeManagement extends javax.swing.JFrame {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(143, 143, 143))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -793,139 +798,35 @@ public class EmployeeManagement extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        //BaÌ�o hiÃªÌ£u laÌ€ Ä‘ang thao taÌ�c chÆ°Ì�c nÄƒng add:
-        this.funcName = "add";        
-        
-        //KiÃªÌ‰m tra xem liÃªÌ£u hoÌ£ coÌ� Ä‘ang thÃªm dÆ°Ìƒ liÃªÌ£u khÃ´ng?
-        if(txtEmployeeName.isEditable() && txtAddress.isEditable() && txtCMND.isEditable()
-                && txtPhone.isEditable() && txtEmail.isEditable() && txtSalary.isEditable())
-        {
-            //KiÃªÌ‰m tra hoÌ£ coÌ� muÃ´Ì�n huÌ‰y boÌ‰ caÌ�c trÆ°Æ¡Ì€ng Ä‘aÌƒ nhÃ¢Ì£p Ä‘ÃªÌ‰ thÃªm mÃ´Ì£t employee mÆ¡Ì�i khÃ´ng?
-            //KiÃªÌ‰m tra ngÆ°Æ¡Ì€i duÌ€ng Ä‘aÌƒ nhÃ¢Ì£p Ä‘c thÃ´ng tin giÌ€ rÃ´Ì€i?
-            //NÃªÌ�u chÆ°a nhÃ¢Ì£p thÃ´ng tin giÌ€ thiÌ€ bÃ¢Ì�m thoaÌ‰i maÌ�i.
-            if(!txtEmployeeName.getText().equals("") || !(dateChBirthday.getDate()==null || !(cbBoxGender.getSelectedIndex()==0))
-                    || !(cbDepartment.getSelectedIndex()== 0) || !(cbRole.getSelectedIndex() == 0)|| !txtAddress.getText().equals("")
-                    || !txtCMND.getText().equals("") || !txtPhone.getText().equals("") || !txtEmail.getText().equals("") || !txtSalary.getText().equals(""))
-            {
-                int dialogButton = JOptionPane.YES_NO_OPTION;
-                int dialogResult = JOptionPane.showConfirmDialog (null, "BaÌ£n coÌ� muÃ´Ì�n thÃªm mÆ¡Ì�i vaÌ€ huÌ‰y caÌ�c thÃ´ng tin hiÃªÌ£n coÌ�?","Warning",dialogButton);
-                if(dialogResult == JOptionPane.YES_OPTION){
-                    // Reset thÃªm mÆ¡Ì�i:
-                    txtEmployeeName.setText("");
-                    dateChBirthday.setDate(null);
-                    cbBoxGender.setSelectedIndex(0); // Nam                   
-                    cbDepartment.setSelectedIndex(0);
-                    cbRole.setSelectedIndex(0);
-                    txtAddress.setText("");
-                    txtCMND.setText("");
-                    txtPhone.setText("");
-                    txtEmail.setText("");
-                    txtSalary.setText("");
-                }
-            }
-        }else{
-            //Reset phoÌ€ng trÆ°Æ¡Ì€ng hÆ¡Ì£p nÃªÌ�u nhÆ° ngÆ°Æ¡Ì€i duÌ€ng Ä‘aÌƒ click vaÌ€o mÃ´Ì£t nhÃ¢n viÃªn bÃ¢Ì�t kyÌ€:
-            txtEmployeeCode.setText("");
-            txtEmployeeName.setText("");         
-            dateChBirthday.setDate(null);
-            cbBoxGender.setSelectedIndex(0);
-            cbDepartment.setSelectedIndex(0);
-            cbRole.setSelectedIndex(0);
-            txtAddress.setText("");
-            txtCMND.setText("");
-            txtPhone.setText("");
-            txtEmail.setText("");
-            txtSalary.setText("");            
-
-            //KhÃ´ng cho ngÆ°Æ¡Ì€i duÌ€ng nhÃ¢Ì£p primary Key Ä‘ÃªÌ‰ hÃªÌ£ thÃ´Ì�ng tÆ°Ì£ generate:
-            txtEmployeeCode.setEditable(false);
-            txtEmployeeName.setEditable(true);
-            dateChBirthday.setEnabled(true);
-            cbBoxGender.setEnabled(true);
-            cbDepartment.setEnabled(true);
-            cbRole.setEnabled(true);
-            txtAddress.setEditable(true);
-            txtCMND.setEditable(true);
-            txtPhone.setEditable(true);
-            txtEmail.setEditable(true);
-            txtSalary.setEditable(true);
-            jPanel4.setEnabled(true);
-            
-            btnDelete.setEnabled(false);
-            btnEdit.setEnabled(false);
-
-            btnSave.setEnabled(true);
-            btnCancel.setEnabled(true);
-
+        DashBoard db = new DashBoard();
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Bạn có chắc chắn muốn thoát?","Warning",dialogButton);
+        if(dialogResult == JOptionPane.YES_OPTION){
+            db.setVisible(true);
+            this.dispose();
         }
-    }//GEN-LAST:event_btnAddActionPerformed
+    }//GEN-LAST:event_btnBackActionPerformed
 
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+    private void txtEmployeeCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmployeeCodeActionPerformed
         // TODO add your handling code here:
-        if(selectedIndex < 0)
-        {
-            JOptionPane.showMessageDialog(null, "HaÌƒy choÌ£n mÃ´Ì£t nhÃ¢n viÃªn Ä‘ÃªÌ‰ chiÌ‰nh sÆ°Ì‰a!");
-            resetForm();
-        }else{
-            //ThiÃªÌ�t lÃ¢Ì£p caÌ�c chÆ°Ì�c nÄƒng chuÃ¢Ì‰n biÌ£ chiÌ‰nh sÆ°Ì‰a nhÃ¢n viÃªn:
-            this.funcName = "edit";
-            //KhÃ´ng cho ngÆ°Æ¡Ì€i duÌ€ng thay Ä‘Ã´Ì‰i maÌƒ nhÃ¢n viÃªn:
-            txtEmployeeCode.setEditable(false);
-            txtEmployeeName.setEditable(true);
-            dateChBirthday.setEnabled(true);
-            cbBoxGender.setEnabled(true);
-            cbDepartment.setEnabled(true);
-            cbRole.setEnabled(true);
-            txtAddress.setEditable(true);
-            txtCMND.setEditable(true);
-            txtPhone.setEditable(true);
-            txtEmail.setEditable(true);
-            txtSalary.setEditable(true);
-          
-            btnAdd.setEnabled(false);
-            btnDelete.setEnabled(false);
+    }//GEN-LAST:event_txtEmployeeCodeActionPerformed
 
-            btnSave.setEnabled(true);
-            btnCancel.setEnabled(true);
-            jPanel4.setEnabled(true);
-            
-        }
-    }//GEN-LAST:event_btnEditActionPerformed
-
-    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnCancelActionPerformed
+        resetForm();
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
-        if(selectedIndex < 0)
-        {
-            JOptionPane.showMessageDialog(null, "HaÌƒy choÌ£n mÃ´Ì£t nhÃ¢n viÃªn Ä‘ÃªÌ‰ xoÌ�a!");
-            resetForm();
-        }
-        else{
-            //ThiÃªÌ�t lÃ¢Ì£p caÌ�c chÆ°Ì�c nÄƒng Ä‘ÃªÌ‰ chuÃ¢Ì‰n biÌ£ xoÌ�a:
-            this.funcName = "delete";
-            btnAdd.setEnabled(false);
-            btnEdit.setEnabled(false);
-            
-            btnSave.setEnabled(true);
-            btnCancel.setEnabled(true);
-            
-        }
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnSaveActionPerformed
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
         switch(this.funcName){
-            //ThÃªm dÆ°Ìƒ liÃªÌ£u:
+            //Thêm dữ liệu:
             case "add":
-            //KiÃªÌ‰m tra xem caÌ�c trÆ°Æ¡Ì€ng dÆ°Ìƒ liÃªÌ£u coÌ� rÃ´Ìƒng hay khÃ´ng?:
+            //Kiểm tra xem các trường dữ liệu có rỗng hay không?:
             String HoTen = txtEmployeeName.getText();
             Date bdDate = dateChBirthday.getDate();
-            
+
             String GioiTinh = cbBoxGender.getSelectedItem().toString();
             //QQQQQ
             String TenPB = cbDepartment.getSelectedItem().toString();
@@ -936,7 +837,7 @@ public class EmployeeManagement extends javax.swing.JFrame {
             String Email = txtEmail.getText();
             String HeSoLuong = txtSalary.getText();
 
-            //XoÌ�a caÌ�c khoaÌ‰ng trÄƒÌ�ng Æ¡Ì‰ phiÌ�a Ä‘Ã¢Ì€u vaÌ€ phiÌ�a Ä‘uÃ´i cuÌ‰a chuÃ´Ìƒi:
+            //Xóa các khoảng trắng ở phía đầu và phía đuôi của chuỗi:
             HoTen = HoTen.trim();
             GioiTinh = GioiTinh.trim();
             TenPB = TenPB.trim();
@@ -946,53 +847,54 @@ public class EmployeeManagement extends javax.swing.JFrame {
             DienThoai = DienThoai.trim();
             Email = Email.trim();
             HeSoLuong = HeSoLuong.trim();
-            
-            
+
             if(!HoTen.equals("") && !(bdDate==null) && !GioiTinh.equals("") && !TenPB.equals("") && !TenCV.equals("") && !DiaChi.equals("")
-                    && !CMND.equals("") && !DienThoai.equals("") && !Email.equals("") && !HeSoLuong.equals(""))
+                && !CMND.equals("") && !DienThoai.equals("") && !Email.equals("") && !HeSoLuong.equals(""))
             {
                 try {
-                        
-                        //ChuÃ´Ìƒi ban Ä‘Ã¢Ì€u lÆ°u: dd/MM/yyyy:
-                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                        String NgaySinh = df.format(bdDate);
 
-                        System.out.println("Ngay: " + NgaySinh);
-                        Employee employee = new Employee(HoTen, NgaySinh, GioiTinh, TenPB, TenCV , DiaChi, CMND, DienThoai, Email, HeSoLuong);
-                        employee.setFile(file);
-                        EmployeeModify.insert(employee);
+                    //Chuỗi ban đầu lưu: dd/MM/yyyy:
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String NgaySinh = df.format(bdDate);
 
-                        //Show laÌ£i dÆ°Ìƒ liÃªÌ£u mÆ¡Ì�i:
-                        showEmployee();
-                        JOptionPane.showMessageDialog(null, "Báº¡n Ä‘Ã£ lÆ°u thÃ nh cÃ´ng nhÃ¢n viÃªn nÃ y!");
-                        //Reset form vÃªÌ€ ban Ä‘Ã¢Ì€u:
-                        resetForm();
+                    System.out.println("Ngay: " + NgaySinh);
+                    Employee employee = new Employee(HoTen, NgaySinh, GioiTinh, TenPB, TenCV , DiaChi, CMND, DienThoai, Email, HeSoLuong);
+                    employee.setFile(file);
+                    EmployeeModify.insert(employee);
 
-                    } catch (Exception ex) {
-                        System.out.println(ex);
-                    }
+                    //Show lại dữ liệu mới:
+                    showEmployee();
+                    JOptionPane.showMessageDialog(null, "Bạn đã lưu thành công nhân viên này!");
+                    //Reset form về ban đầu:
+                    resetForm();
+
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
             }else{
-                JOptionPane.showMessageDialog(null, "HaÌƒy Ä‘iÃªÌ€n Ä‘Ã¢Ì€y Ä‘uÌ‰ thÃ´ng tin nhÃ¢n viÃªn!");
+                JOptionPane.showMessageDialog(null, "Hãy điền đầy đủ thông tin nhân viên!");
             }
             break;
-            
+
             case "delete":
+            EmployeeReport employee = this.employeeList.get(selectedIndex);
+
             int dialogButton = JOptionPane.YES_NO_OPTION;
-            int dialogResult = JOptionPane.showConfirmDialog (null, "BaÌ£n coÌ� muÃ´Ì�n xoaÌ� nhÃ¢n viÃªn naÌ€y?","Warning",dialogButton);
+            int dialogResult = JOptionPane.showConfirmDialog (null, "Bạn có muốn xoá nhân viên này?","Warning",dialogButton);
             if(dialogResult == JOptionPane.YES_OPTION){
                 //Delete employee:
-                EmployeeModify.delete(txtEmployeeCode.getText());
-                //Show laÌ£i dÆ°Ìƒ liÃªÌ£u mÆ¡Ì�i:
+                EmployeeModify.delete(employee.getMaNV());
+                //Show lại dữ liệu mới:
                 showEmployee();
 
-                //Reset form vÃªÌ€ ban Ä‘Ã¢Ì€u:
+                //Reset form về ban đầu:
                 resetForm();
             }
             break;
 
             case "edit":
 
-            //KiÃªÌ‰m tra xem caÌ�c trÆ°Æ¡Ì€ng dÆ°Ìƒ liÃªÌ£u coÌ� rÃ´Ìƒng hay khÃ´ng?:
+            //Kiểm tra xem các trường dữ liệu có rỗng hay không?:
             String oldMaNV = txtEmployeeCode.getText();
             String newHoTen = txtEmployeeName.getText();
             Date nwbdDate = dateChBirthday.getDate();
@@ -1005,69 +907,256 @@ public class EmployeeManagement extends javax.swing.JFrame {
             String newEmail = txtEmail.getText();
             String newHeSoLuong = txtSalary.getText();
 
-            //XoÌ�a khoaÌ‰ng trÄƒÌ�ng Æ¡Ì‰ Ä‘Ã¢Ì€u vaÌ€ cuÃ´Ì�i chuÃ´Ìƒi:
+            //Xóa khoảng trắng ở đầu và cuối chuỗi:
             newHoTen = newHoTen.trim();
             newGioiTinh = newGioiTinh.trim();
             newDiaChi = newDiaChi.trim();
-            
+
             if(!newHoTen.equals("") && !(nwbdDate == null) && !newGioiTinh.equals("") &&
-                    !newTenPB.equals("")&& !newTenCV.equals("") && !newDiaChi.equals("")
-                    &&!newCMND.equals("") && !newDienThoai.equals("") && !newEmail.equals("") && !newHeSoLuong.equals("") )
+                !newTenPB.equals("")&& !newTenCV.equals("") && !newDiaChi.equals("")
+                &&!newCMND.equals("") && !newDienThoai.equals("") && !newEmail.equals("") && !newHeSoLuong.equals("") )
             {
-                
-                 String newNgaySinh = null;
+
+                String newNgaySinh = null;
+                try {
+
+                    //Chuỗi ban đầu lưu: dd/MM/yyyy:
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    newNgaySinh = df.format(nwbdDate);
+
+                    System.out.println("Ngay: " + newNgaySinh);
+
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+                int editDialogButton = JOptionPane.YES_NO_OPTION;
+                int editDialogResult = JOptionPane.showConfirmDialog (null, "Bạn có muốn lưu lại kết quả chỉnh sửa?","Warning",editDialogButton);
+                if(editDialogResult == JOptionPane.YES_OPTION){
+                    Employee editedEmployee = new Employee(oldMaNV,newHoTen,newNgaySinh, newGioiTinh,newTenPB,newTenCV,newDiaChi,newCMND,newDienThoai,newEmail,newHeSoLuong);
+                    editedEmployee.setFile(file);
                     try {
-                        
-                        //ChuÃ´Ìƒi ban Ä‘Ã¢Ì€u lÆ°u: dd/MM/yyyy:
-                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                        newNgaySinh = df.format(nwbdDate);
-
-                        System.out.println("Ngay: " + newNgaySinh);
-
-
-                    } catch (Exception ex) {
-                        System.out.println(ex);
+                        EmployeeModify.update(editedEmployee);
+                    } catch (ParseException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
-                    int editDialogButton = JOptionPane.YES_NO_OPTION;
-                    int editDialogResult = JOptionPane.showConfirmDialog (null, "BaÌ£n coÌ� muÃ´Ì�n lÆ°u laÌ£i kÃªÌ�t quaÌ‰ chiÌ‰nh sÆ°Ì‰a?","Warning",editDialogButton);
-                    if(editDialogResult == JOptionPane.YES_OPTION){
-                        Employee editedEmployee = new Employee(oldMaNV,newHoTen,newNgaySinh, newGioiTinh,newTenPB,newTenCV,newDiaChi,newCMND,newDienThoai,newEmail,newHeSoLuong);
-                        editedEmployee.setFile(file);
-                        try {
-							EmployeeModify.update(editedEmployee);
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-                        //Show laÌ£i dÆ°Ìƒ liÃªÌ£u mÆ¡Ì�i:
-                        showEmployee();
-                        //Reset form vÃªÌ€ ban Ä‘Ã¢Ì€u:
-                        resetForm();
-                    }
+                    //Show lại dữ liệu mới:
+                    showEmployee();
+                    //Reset form về ban đầu:
+                    resetForm();
+                }
             }else{
-                JOptionPane.showMessageDialog(null, "HaÌƒy Ä‘iÃªÌ€n Ä‘Ã¢Ì€y Ä‘uÌ‰ thÃ´ng tin nhÃ¢n viÃªn!");
+                JOptionPane.showMessageDialog(null, "Hãy điền đầy đủ thông tin nhân viên!");
             }
             break;
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
-    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnRefreshActionPerformed
-
-    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
-                DashBoard db = new DashBoard();
-        int dialogButton = JOptionPane.YES_NO_OPTION;
-        int dialogResult = JOptionPane.showConfirmDialog (null, "BaÌ£n coÌ� cháº¯c cháº¯n muá»‘n thoÃ¡t?","Warning",dialogButton);
-        if(dialogResult == JOptionPane.YES_OPTION){
-            db.setVisible(true);
-            this.dispose();
+        if(selectedIndex < 0)
+        {
+            JOptionPane.showMessageDialog(null, "Hãy chọn một nhân viên để xóa!");
+            resetForm();
         }
-    }//GEN-LAST:event_btnBackActionPerformed
+        else{
+            //Thiết lập các chức năng để chuẩn bị xóa:
+            this.funcName = "delete";
+            btnAdd.setEnabled(false);
+            btnEdit.setEnabled(false);
+
+            btnSave.setEnabled(true);
+            btnCancel.setEnabled(true);
+
+        }
+        
+        //Reset các chức năng tìm kiếm
+        txtSearchName.setText("");
+        //Không cho thao tác các chức năng tìm kiếm
+        txtSearchName.setEditable(false);
+        btnSearch.setEnabled(false);
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        // TODO add your handling code here:
+        if(selectedIndex >= 0)
+        {
+            EmployeeReport employeereport = employeeList.get(selectedIndex);
+            txtEmployeeCode.setText(employeereport.getMaNV());
+            txtEmployeeName.setText(employeereport.getHoTen());
+            
+            try {
+                //Chuỗi ban đầu lưu: yyyy-MM-dd:
+                String bdStr = employeereport.getNgaySinh();
+
+                Date bdDate = new SimpleDateFormat("yyyy-MM-dd").parse(bdStr);
+
+                SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                String tmp = df.format(bdDate);
+
+                Date result = new SimpleDateFormat("dd/MM/yyyy").parse(tmp);
+
+                dateChBirthday.setDate(result);
+
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+            setComboBoxGender(employeereport.getGioiTinh());
+            setComboBoxTenPB(employeereport.getTenPB());
+            setComboBoxTenCV(employeereport.getTenCV());
+            txtAddress.setText(employeereport.getDiaChi());
+            txtCMND.setText(employeereport.getCMND());
+            txtPhone.setText(employeereport.getDienThoai());
+            txtEmail.setText(employeereport.getEmail());
+            txtSalary.setText(employeereport.getHeSoLuong());
+        }
+        else
+        {
+            txtEmployeeCode.setText("");
+            txtEmployeeName.setText("");            
+            dateChBirthday.setDate(null);
+            cbBoxGender.setSelectedIndex(0); // Nam
+            cbDepartment.setSelectedIndex(0);
+            cbRole.setSelectedIndex(0);
+            txtAddress.setText("");
+            txtCMND.setText("");  
+            txtPhone.setText("");  
+            txtEmail.setText("");  
+            txtSalary.setText("");  
+        }
+
+        funcName = "";
+        btnSave.setEnabled(false);
+        btnCancel.setEnabled(false);
+
+        btnDelete.setEnabled(true);
+        btnEdit.setEnabled(true);
+        btnAdd.setEnabled(true);
+
+        txtEmployeeCode.setEditable(false);
+        txtEmployeeName.setEditable(false);
+        cbBoxGender.setEnabled(false);
+        txtAddress.setEditable(false);
+        cbDepartment.setEnabled(false);
+        cbRole.setEnabled(false);
+
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        if(selectedIndex < 0)
+        {
+            JOptionPane.showMessageDialog(null, "Hãy chọn một nhân viên để chỉnh sửa!");
+            resetForm();
+        }else{
+            //Thiết lập các chức năng chuẩn bị chỉnh sửa nhân viên:
+            this.funcName = "edit";
+            //Không cho người dùng thay đổi mã nhân viên:
+            txtEmployeeCode.setEditable(false);
+            txtEmployeeName.setEditable(true);
+            dateChBirthday.setEnabled(true);
+            cbBoxGender.setEnabled(true);
+            cbDepartment.setEnabled(true);
+            cbRole.setEnabled(true);
+            txtAddress.setEditable(true);
+            txtCMND.setEditable(true);
+            txtPhone.setEditable(true);
+            txtEmail.setEditable(true);
+            txtSalary.setEditable(true);
+
+            btnAdd.setEnabled(false);
+            btnDelete.setEnabled(false);
+
+            btnSave.setEnabled(true);
+            btnCancel.setEnabled(true);
+
+            jpHinh.setEnabled(true);
+
+        }
+        
+        //Reset các chức năng tìm kiếm
+        txtSearchName.setText("");
+        //Không cho thao tác các chức năng tìm kiếm
+        txtSearchName.setEditable(false);
+        btnSearch.setEnabled(false);
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // TODO add your handling code here:
+        //Báo hiệu là đang thao tác chức năng add:
+        this.funcName = "add";
+
+        //Kiểm tra xem liệu họ có đang thêm dữ liệu không?
+        if(txtEmployeeName.isEditable() && txtAddress.isEditable() && txtCMND.isEditable()
+            && txtPhone.isEditable() && txtEmail.isEditable() && txtSalary.isEditable())
+        {
+            //Kiểm tra họ có muốn hủy bỏ các trường đã nhập để thêm một employee mới không?
+            //Kiểm tra người dùng đã nhập đc thông tin gì rồi?
+            //Nếu chưa nhập thông tin gì thì bấm thoải mái.
+            if(!txtEmployeeName.getText().equals("") || !(dateChBirthday.getDate()==null || !(cbBoxGender.getSelectedIndex()==0))
+                || !(cbDepartment.getSelectedIndex()== 0) || !(cbRole.getSelectedIndex() == 0)|| !txtAddress.getText().equals("")
+                || !txtCMND.getText().equals("") || !txtPhone.getText().equals("") || !txtEmail.getText().equals("") || !txtSalary.getText().equals(""))
+            {
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog (null, "Bạn có muốn thêm mới và hủy các thông tin hiện có?","Warning",dialogButton);
+                if(dialogResult == JOptionPane.YES_OPTION){
+                    // Reset thêm mới:
+                    txtEmployeeName.setText("");
+                    dateChBirthday.setDate(null);
+                    cbBoxGender.setSelectedIndex(0); // Nam
+                    cbDepartment.setSelectedIndex(0);
+                    cbRole.setSelectedIndex(0);
+                    txtAddress.setText("");
+                    txtCMND.setText("");
+                    txtPhone.setText("");
+                    txtEmail.setText("");
+                    txtSalary.setText("");
+                }
+            }
+        }else{
+            //Reset phòng trường hợp nếu như người dùng đã click vào một nhân viên bất kỳ:
+            txtEmployeeCode.setText("");
+            txtEmployeeName.setText("");
+            dateChBirthday.setDate(null);
+            cbBoxGender.setSelectedIndex(0);
+            cbDepartment.setSelectedIndex(0);
+            cbRole.setSelectedIndex(0);
+            txtAddress.setText("");
+            txtCMND.setText("");
+            txtPhone.setText("");
+            txtEmail.setText("");
+            txtSalary.setText("");
+
+            //Không cho người dùng nhập primary Key để hệ thống tự generate:
+            txtEmployeeCode.setEditable(false);
+            txtEmployeeName.setEditable(true);
+            dateChBirthday.setEnabled(true);
+            cbBoxGender.setEnabled(true);
+            cbDepartment.setEnabled(true);
+            cbRole.setEnabled(true);
+            txtAddress.setEditable(true);
+            txtCMND.setEditable(true);
+            txtPhone.setEditable(true);
+            txtEmail.setEditable(true);
+            txtSalary.setEditable(true);
+            jpHinh.setEnabled(true);
+
+            btnDelete.setEnabled(false);
+            btnEdit.setEnabled(false);
+
+            btnSave.setEnabled(true);
+            btnCancel.setEnabled(true);
+        }
+        
+        //Reset các chức năng tìm kiếm
+        txtSearchName.setText("");
+        //Không cho thao tác các chức năng tìm kiếm
+        txtSearchName.setEditable(false);
+        btnSearch.setEnabled(false);
+    }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         // TODO add your handling code here:
@@ -1076,22 +1165,22 @@ public class EmployeeManagement extends javax.swing.JFrame {
 
     private void btnPrintEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintEmployeeActionPerformed
         // TODO add your handling code here:
-                //Khai baÌ�o Ä‘Æ°Æ¡Ì€ng dÃ¢Ìƒn Ä‘ÃªÌ�n file StaffManagement:
+        //Khai báo đường dẫn đến file StaffManagement:
         String link = "src\\Reports\\PrintEmployee.jrxml";
         Connection con = null;
         try{
             con = DBConnection.getInstance().getConnection();
 
-            //TaÌ£o JasperReport:
+            //Tạo JasperReport:
             JasperReport jr = JasperCompileManager.compileReport(link);
-            //TaÌ£o JasperPrint:
+            //Tạo JasperPrint:
             JasperPrint jp = JasperFillManager.fillReport(jr, null, con);
-            //TaÌ£o JasperReviewer:
+            //Tạo JasperReviewer:
             JasperViewer.viewReport(jp,false);
         }catch(Exception e){
             e.printStackTrace();
         }finally{
-            
+
             if(con != null)
             {
                 try {
@@ -1103,9 +1192,89 @@ public class EmployeeManagement extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnPrintEmployeeActionPerformed
 
-    private void txtEmployeeCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmployeeCodeActionPerformed
+    private void lblNewLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNewLabelMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtEmployeeCodeActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+            fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
+            int result = fileChooser.showOpenDialog(getParent());
+            if (result == JFileChooser.APPROVE_OPTION) {
+                file = fileChooser.getSelectedFile();
+                ImageIcon icon = new ImageIcon(new ImageIcon(file.getAbsolutePath())
+                .getImage().getScaledInstance(jpHinh.getWidth(), jpHinh.getHeight(), Image.SCALE_DEFAULT));
+                lblNewLabel.setIcon(icon);
+        }
+    }//GEN-LAST:event_lblNewLabelMouseClicked
+
+    private void jpHinhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpHinhMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jpHinhMouseClicked
+
+    private void tableEmployeeManaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableEmployeeManaMousePressed
+        // TODO add your handling code here:
+        
+                
+                selectedIndex = tableEmployeeMana.getSelectedRow();
+                manv = employeeList.get(selectedIndex).getMaNV();
+                if(selectedIndex >= 0 && !funcName.equals("add"))
+                {
+                    EmployeeReport employee = employeeList.get(selectedIndex);
+                    
+                    txtEmployeeCode.setText(employee.getMaNV());
+                    txtEmployeeName.setText(employee.getHoTen());
+                    //Lấy ngày:
+                    try {
+                        //Chuỗi ban đầu: yyyy-MM-dd:
+                        String bdStr = employee.getNgaySinh();
+
+                        Date bdDate = new SimpleDateFormat("yyyy-MM-dd").parse(bdStr);
+                        
+                        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                        String tmp = df.format(bdDate);
+                        
+                        Date result = new SimpleDateFormat("dd/MM/yyyy").parse(tmp);
+
+                        dateChBirthday.setDate(result);
+                        
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
+                    setComboBoxGender(employee.getGioiTinh());
+                    setComboBoxTenPB(employee.getTenPB());
+                    setComboBoxTenCV(employee.getTenCV());
+                    txtAddress.setText(employee.getDiaChi());
+                    txtCMND.setText(employee.getCMND());
+                    txtPhone.setText(employee.getDienThoai());
+                    txtEmail.setText(employee.getEmail());
+                    txtSalary.setText(employee.getHeSoLuong());
+                    if(employee.getBytes() != null) {
+                    	byte[] data = employee.getBytes();
+                    	try {
+                            OutputStream targetFile = new FileOutputStream("tmp.jpg");
+                            targetFile.write(data);
+                            targetFile.close();
+    	                    ImageIcon icon = new ImageIcon(new ImageIcon("tmp.jpg").getImage().getScaledInstance(jpHinh.getWidth(), jpHinh.getHeight(), Image.SCALE_DEFAULT));
+                                lblNewLabel.setIcon(icon);
+                                } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                    e1.printStackTrace();
+                                }
+                            }
+                    else {
+                        lblNewLabel.setIcon(null);
+                    }
+                }
+    }//GEN-LAST:event_tableEmployeeManaMousePressed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    	if(!manv.equals("")) {
+    		PopupEmployeeResume popupEmployeeResume = new PopupEmployeeResume();
+        	popupEmployeeResume.setVisible(true);
+        	resetForm();
+        	showEmployee();
+    	}
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1133,6 +1302,9 @@ public class EmployeeManagement extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(EmployeeManagement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -1141,7 +1313,6 @@ public class EmployeeManagement extends javax.swing.JFrame {
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnBack;
@@ -1156,6 +1327,7 @@ public class EmployeeManagement extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbDepartment;
     private javax.swing.JComboBox<String> cbRole;
     private com.toedter.calendar.JDateChooser dateChBirthday;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1171,9 +1343,10 @@ public class EmployeeManagement extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPanel jpHinh;
+    private javax.swing.JLabel lblNewLabel;
     private javax.swing.JTable tableEmployeeMana;
     private javax.swing.JTextArea txtAddress;
     private javax.swing.JTextField txtCMND;
@@ -1183,27 +1356,5 @@ public class EmployeeManagement extends javax.swing.JFrame {
     private javax.swing.JTextField txtPhone;
     private javax.swing.JTextField txtSalary;
     private javax.swing.JTextField txtSearchName;
-    private javax.swing.JLabel lblNewLabel;
-}
-
-class ImagePanel extends JPanel
-{
-    private BufferedImage image;
-
-    void setImage(BufferedImage image)
-    {
-        this.image = image;
-        repaint();
-    }
-
-    @Override
-    protected void paintComponent(Graphics g)
-    {
-        super.paintComponent(g);
-        if (image != null)
-        {
-            g.drawImage(image, 0, 0, null);
-        }
-    }
-
+    // End of variables declaration//GEN-END:variables
 }

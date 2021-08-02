@@ -12,6 +12,7 @@ package Database;
 public class EmployeeReport {
     String MaNV, HoTen, NgaySinh, GioiTinh, TenPB, TenCV, DiaChi, CMND, DienThoai, Email, HeSoLuong;
     byte [] bytes = null;
+    
     public EmployeeReport(String MaNV, String HoTen, String NgaySinh, String GioiTinh, String TenPB, String TenCV, String DiaChi, String CMND, String DienThoai, String Email, String HeSoLuong) {
         this.MaNV = MaNV;
         this.HoTen = HoTen;
@@ -126,12 +127,14 @@ public class EmployeeReport {
     public void setHeSoLuong(String HeSoLuong) {
         this.HeSoLuong = HeSoLuong;
     }
-
-	public byte[] getBytes() {
+    
+    	public byte[] getBytes() {
 		return bytes;
 	}
 
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
 	}
+        
+          
 }
